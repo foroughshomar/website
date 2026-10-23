@@ -39,7 +39,7 @@ html[data-lang=elv]{--font-sans:system-ui,"Segoe UI",Roboto,Arial,sans-serif;--f
 html[data-lang=elv] .fs-elv{font-family:"Tengwar Ariador",system-ui,sans-serif;letter-spacing:.02em}
 html[data-lang=elv] .fs-elv[data-en]::after{content:" · " attr(data-en);font-family:system-ui,sans-serif;font-size:11px;opacity:.75;letter-spacing:0}
 .fs-lang{max-width:none;width:auto;min-width:138px}
-@media (max-width:480px){html[dir=ltr] header a.shrink-0 span.text-right{font-size:12px;max-width:92px;white-space:normal;line-height:1.25}.fs-lang{min-width:0;max-width:118px;font-size:11px}header > div{gap:.5rem!important;padding-left:.6rem!important;padding-right:.6rem!important}}
+@media (max-width:480px){html[dir=ltr] header a.shrink-0 span.text-right{font-size:12px;max-width:92px;white-space:normal;line-height:1.25}.fs-lang{min-width:0;max-width:126px;font-size:10.5px;padding:0 2px}header > div{gap:.5rem!important;padding-left:.6rem!important;padding-right:.6rem!important}}
 
 html.fs-ddnav header nav.lg\:flex,html.fs-ddnav header button.lg\:hidden,html.fs-ddnav header div.lg\:hidden{display:none!important}
 header{position:sticky}.fs-nav{display:flex;align-items:center}.fs-nav-list{display:none;list-style:none;margin:0;padding:0;gap:1.1rem;align-items:center}
