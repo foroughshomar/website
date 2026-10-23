@@ -1,0 +1,56 @@
+{
+ "updated": "2026-10-23T17:14:34.206Z",
+ "count": 5,
+ "articles": [
+  {
+   "slug": "sabt-nam-samane-modian-kasb-o-kar-kuchak",
+   "url": "https://foroughshomar.ir/articles/sabt-nam-samane-modian-kasb-o-kar-kuchak",
+   "title": "راهنمای ساده ثبت‌نام در سامانه مؤدیان برای کسب‌وکارهای کوچک",
+   "category": "مالیات الکترونیک",
+   "date_fa": "۰۱-۰۸-۱۴۰۵",
+   "published_at": "2026-10-23T11:34:11.815Z",
+   "excerpt": "راهنمای عملی و گام‌به‌گام ثبت‌نام در سامانه مؤدیان مخصوص کسب‌وکارهای کوچک و متوسط با نکات کاربردی و راه‌حل مشکلات رایج.",
+   "image": "/articles/sabt-nam-samane-modian-kasb-o-kar-kuchak.jpg"
+  },
+  {
+   "slug": "barg-tashkhis-ghadam-aval",
+   "url": "https://foroughshomar.ir/articles/barg-tashkhis-ghadam-aval",
+   "title": "برگ تشخیص آمد؛ قبل از هر اقدام چه باید کرد؟",
+   "category": "دفاع پرونده",
+   "date_fa": "۰۸-۰۳-۱۴۰۵",
+   "published_at": null,
+   "excerpt": "مهلت را ببینید، رقم را با پرونده خودتان بسنجید، و پیش از اعتراض یا توافق تصویری روشن از سند بسازید.",
+   "image": "/articles/barg-tashkhis-ghadam-aval.webp"
+  },
+  {
+   "slug": "eshtebahat-ezharname",
+   "url": "https://foroughshomar.ir/articles/eshtebahat-ezharname",
+   "title": "اشتباه‌هایی که اظهارنامه را شکننده می‌کند",
+   "category": "اظهارنامه",
+   "date_fa": "۲۱-۰۲-۱۴۰۵",
+   "published_at": null,
+   "excerpt": "شتاب آخر مهلت، ناهماهنگی گزارش‌ها و هزینه بدون سند، بیش از هر چیز پرونده را آسیب‌پذیر می‌کند.",
+   "image": "/articles/eshtebahat-ezharname.webp"
+  },
+  {
+   "slug": "tabasere-100-molahezat",
+   "url": "https://foroughshomar.ir/articles/tabasere-100-molahezat",
+   "title": "تبصره ۱۰۰ برای صاحبان مشاغل؛ برای چه کسانی و با چه ملاحظه‌ای؟",
+   "category": "صاحبان مشاغل",
+   "date_fa": "۰۵-۰۲-۱۴۰۵",
+   "published_at": null,
+   "excerpt": "تبصره ۱۰۰ مسیر ساده‌تری است، اما برای همه مناسب نیست. سقف، نوع فعالیت و سابقه پرونده را اول بسنجید.",
+   "image": "/articles/tabasere-100-molahezat.webp"
+  },
+  {
+   "slug": "samaneye-moaddian-shoroo",
+   "url": "https://foroughshomar.ir/articles/samaneye-moaddian-shoroo",
+   "title": "سامانه مؤدیان و صورتحساب الکترونیکی؛ از کجا شروع کنیم؟",
+   "category": "تکالیف دوره‌ای",
+   "date_fa": "۰۸-۰۱-۱۴۰۵",
+   "published_at": null,
+   "excerpt": "پیش از اتصال نرم‌افزار، کارپوشه، الگوی صورتحساب و جریان واقعی فروش را بشناسید.",
+   "image": "/articles/samaneye-moaddian-shoroo.webp"
+  }
+ ]
+}
