@@ -39,7 +39,7 @@ const FA_DISCLAIMER_RE = /(<p class="mt-8 rounded-lg border border-gold\/30 p-4 
 // Ask xAI to translate one article. Returns {title, description, category, body_html}
 export async function translateArticle(src, lang, key) {
   const name = lang === 'en' ? 'English' : 'Modern Standard Arabic';
-  const sys = `You are a senior translator for an Iranian tax and accounting consultancy ("Forough Shomar Simorgh"). Translate Persian into natural, fluent, professional ${name} for business readers — not literal or robotic. Keep Iranian legal terms meaningful (e.g. "Taxpayers' System (Samaneh-ye Moadian)", "Note 100", "Article 169", "tax assessment notice (barg-e tashkhis)") ${lang === 'ar' ? 'using natural Arabic equivalents (منظومة المكلّفين، الملاحظة ١٠٠، ورقة التشخيص)' : ''}. Convert Solar Hijri months only if a date is given; keep numbers exact. ${lang === 'en' ? 'Use Latin digits.' : 'Use Arabic-Indic digits.'} Preserve every HTML tag and attribute exactly; translate only the text. Output only valid JSON.`;
+  const sys = `You are a senior translator for an Iranian tax and accounting consultancy ("Forough Shomar Simorgh"). Translate Persian into natural, fluent, professional ${name} for business readers — not literal or robotic. Keep Iranian legal terms meaningful (e.g. "Taxpayers' System (Samaneh-ye Moadian)", "Note 100", "Article 169", "tax assessment notice (barg-e tashkhis)") ${lang === 'ar' ? 'using natural Arabic equivalents (منظومة المكلّفين، الملاحظة ١٠٠، ورقة التشخيص)' : ''}. Convert Solar Hijri months only if a date is given; keep numbers exact. ${lang === 'en' ? 'Use Latin digits.' : 'Use Arabic-Indic digits.'} Preserve every HTML tag and attribute exactly (keep href values unchanged); translate only the text. Translate the FAQ heading «پرسش‌های متداول» exactly as "Frequently Asked Questions". Keep the English title under 60 characters where possible and the description around 150 characters, keeping the main keyword. Output only valid JSON.`;
   const usr = JSON.stringify({ title: src.title, description: src.description, category: src.category, body_html: src.body_html });
   const r = await fetch('https://api.x.ai/v1/chat/completions', { method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
@@ -53,6 +53,7 @@ export async function translateArticle(src, lang, key) {
 }
 
 export function extractFa(html) {
+  html = html.replace(/<!--related-->[\s\S]*?<!--\/related-->/g, '');
   const title = unesc((html.match(/<span class="brand-shine-text">([^<]*)<\/span>/) || [])[1] || '');
   const description = unesc((html.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '');
   const i = html.indexOf('<div class="space-y-5">') + '<div class="space-y-5">'.length;
@@ -73,6 +74,7 @@ const setAlt = (s, slug) => s.replace(/(<link rel="alternate" hreflang="[^"]+" h
 
 // Build the language page from the Persian page HTML
 export function buildLangPage(faHtml, slug, lang, t, dateText) {
+  faHtml = faHtml.replace(/<!--related-->[\s\S]*?<!--\/related-->/g, '');
   const src = extractFa(faHtml);
   let s = dehydrate(faHtml);
   s = s.replace(/<html[^>]*>/, `<html lang="${lang}" dir="${lang === 'en' ? 'ltr' : 'rtl'}" data-page-lang="${lang}">`);
