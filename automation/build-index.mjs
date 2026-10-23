@@ -3,7 +3,9 @@ import fs from 'node:fs'; import path from 'node:path';
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const A = p => path.join(ROOT, p);
 const unesc = s => s.replace(/<!-- -->/g, '').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#x27;|&#39;/g, "'").replace(/&amp;/g, '&').trim();
+import { loadTr, gregFromFa, langDate } from './article-i18n.mjs';
 export function buildIndex() {
+  const tr = loadTr();
   const html = fs.readFileSync(A('articles/index.html'), 'utf8');
   const used = fs.existsSync(A('automation/used.json')) ? JSON.parse(fs.readFileSync(A('automation/used.json'), 'utf8')) : [];
   const seen = new Set(); const items = [];
@@ -18,6 +20,14 @@ export function buildIndex() {
       category, date_fa: date, published_at: u ? u.date : null,
       excerpt: unesc((c.match(/<p class="mt-4[^"]*">([\s\S]*?)<\/p>/) || [])[1] || ''),
       image: (c.match(/<img src="([^"]+)"/) || [])[1] || null });
+    const it = items[items.length - 1], g = gregFromFa(date);
+    for (const l of ['en', 'ar']) {
+      const t = tr[slug]?.[l];
+      if (t && fs.existsSync(A(`articles/${slug}/${l}/index.html`))) {
+        (it.translations ||= {})[l] = { title: t.title, excerpt: t.description || '', category: t.category || '', date: langDate(g, l),
+          path: `/articles/${slug}/${l}/`, url: `https://foroughshomar.ir/articles/${slug}/${l}/` };
+      }
+    }
   }
   const key = d => { const m = String(d).replace(/[۰-۹]/g, x => '۰۱۲۳۴۵۶۷۸۹'.indexOf(x)).match(/(\d+)-(\d+)-(\d+)/); return m ? m[3] + m[2] + m[1] : ''; };
   items.sort((a, b) => key(b.date_fa).localeCompare(key(a.date_fa)) || String(b.published_at || '').localeCompare(String(a.published_at || '')));

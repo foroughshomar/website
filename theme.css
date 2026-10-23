@@ -18,6 +18,10 @@ html.i18n-pending body{opacity:0}
 /* controls */
 .fs-ctrl{display:flex;align-items:center;gap:8px;flex-shrink:0;font:13px/1 system-ui,Tahoma,sans-serif}
 html[dir=ltr] .fs-ctrl{order:99}
+html[dir=ltr] .brand-shine-glint{animation-direction:reverse}
+html.fs-compact header nav.lg\:flex{display:none!important}
+html.fs-compact header button.lg\:hidden{display:inline-flex!important}html.fs-compact header div.lg\:hidden:not(.hidden){display:block!important}
+html.fs-compact header > div > div.flex.items-center.gap-1 > div.hidden{display:none!important}
 .fs-sw{position:relative;width:46px;height:24px;border-radius:999px;border:1px solid #d4af37;background:#0b1f3a;cursor:pointer;padding:0;flex-shrink:0}
 .fs-sw::after{content:"☾";position:absolute;top:2px;inset-inline-start:2px;width:18px;height:18px;border-radius:50%;background:#d4af37;color:#0b1f3a;font-size:12px;line-height:18px;text-align:center;transition:inset-inline-start .2s}
 html[data-theme=light] .fs-sw{background:#f3ead8}
@@ -30,3 +34,10 @@ html[data-theme=light] .brand-shine-text{color:#0b1f3a}
 header nav a{white-space:nowrap}
 @media (min-width:1024px) and (max-width:1279px){header nav{gap:.85rem!important;font-size:13px}header > div{gap:.6rem!important}html[data-lang=en] header nav{font-size:12.5px}}
 @media (min-width:1024px) and (max-width:1439px){header > div > div.flex.items-center.gap-1 > div.hidden{display:none!important}}
+
+@font-face{font-family:"Tengwar Ariador";src:url(/fonts/TengwarAriador-subset.woff2) format("woff2");unicode-range:U+0041-005A,U+0061-007A;font-display:swap}
+html[data-lang=elv]{--font-sans:system-ui,"Segoe UI",Roboto,Arial,sans-serif;--font-display:Georgia,serif}
+html[data-lang=elv] .fs-elv{font-family:"Tengwar Ariador",system-ui,sans-serif;letter-spacing:.02em}
+html[data-lang=elv] .fs-elv[data-en]::after{content:" · " attr(data-en);font-family:system-ui,sans-serif;font-size:11px;opacity:.75;letter-spacing:0}
+.fs-lang{max-width:96px}
+@media (max-width:480px){html[dir=ltr] header a.shrink-0 span.text-right{font-size:12px;max-width:92px;white-space:normal;line-height:1.25}.fs-lang{max-width:78px;font-size:12px}header > div{gap:.5rem!important;padding-left:.6rem!important;padding-right:.6rem!important}}

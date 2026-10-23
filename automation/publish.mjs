@@ -1,5 +1,5 @@
 // Daily article publisher. Reads XAI_API_KEY from env; never logs it.
-import fs from 'node:fs'; import path from 'node:path'; import { buildIndex } from './build-index.mjs';
+import fs from 'node:fs'; import path from 'node:path'; import { buildIndex } from './build-index.mjs'; import { makeVersions } from './article-i18n.mjs';
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const A = p => path.join(ROOT, p);
 const KEY = process.env.XAI_API_KEY; if (!KEY) { console.error('XAI_API_KEY missing'); process.exit(1); }
@@ -73,6 +73,7 @@ const sm = A('sitemap.xml');
 if (fs.existsSync(sm)) fs.writeFileSync(sm, fs.readFileSync(sm, 'utf8').replace('</urlset>', `<url><loc>https://foroughshomar.ir${url}</loc></url></urlset>`));
 used.push({ topic, slug, title: art.title, date: new Date().toISOString() });
 fs.writeFileSync(usedF, JSON.stringify(used, null, 1));
+try { await makeVersions(slug, KEY, art.category || ''); } catch (e) { console.log('Translation failed (Persian still published):', e.message); }
 console.log('index.json articles:', buildIndex());
 fs.appendFileSync(process.env.GITHUB_OUTPUT || '/dev/null', `slug=${slug}\ntitle=${art.title}\n`);
 console.log('Published:', art.title, url);
