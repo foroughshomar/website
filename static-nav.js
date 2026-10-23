@@ -1,0 +1,2 @@
+// Static hosting: force full page loads for internal links (no Node server for client-side loaders).
+document.addEventListener("click",function(e){var a=e.target&&e.target.closest&&e.target.closest("a[href]");if(!a||a.target||e.ctrlKey||e.metaKey||e.shiftKey)return;var u=new URL(a.href,location.href);if(u.origin!==location.origin||/\.(pdf|php|jpg|png|svg)$/.test(u.pathname)||u.pathname.indexOf("/admin")===0||u.pathname.indexOf("/api/")===0)return;if(u.pathname===location.pathname&&u.hash)return;e.preventDefault();e.stopImmediatePropagation();location.href=u.href;},true);
