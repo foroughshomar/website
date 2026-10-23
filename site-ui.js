@@ -89,11 +89,50 @@
     fetch('/articles/index.json').then(function (r) { return r.json(); }).then(function (j) { IDX = {}; (j.articles || []).forEach(function (x) { IDX[x.slug] = x; }); go(); }).catch(function () {});
   }
   function attrs() { var L = ELV ? 'sjn' : lang; if (d.lang !== L) d.lang = L; var R = lang === 'ar' ? 'rtl' : 'ltr'; if (d.dir !== R) d.dir = R; }
-  // Collapse the desktop nav into the menu button when the header would overflow
+  // Grouped header nav (desktop dropdowns + grouped mobile menu); replaces React's flat nav visually
+  var NAV = [['خانه', '/'], ['خدمات', [['خدمات', '/services'], ['تقویم تکالیف', '/calendar'], ['نرم‌افزار سیمرغ شمار', '/software']]],
+    ['درباره ما', [['درباره ما', '/about'], ['چرا ما', '/why-us'], ['پرسش‌ها', '/faq']]], ['مقالات', '/articles'], ['تماس', '/contact']];
+  function cur(h) { var p = location.pathname.replace(/\/+$/, '') || '/'; return h === '/' ? p === '/' : (p === h || p.indexOf(h + '/') === 0); }
+  function link(t, h, cls) { var a = document.createElement('a'); a.href = h; a.textContent = t; a.className = cls; if (cur(h)) { a.classList.add('is-active'); a.setAttribute('aria-current', 'page'); } return a; }
+  function closeAll(except) { document.querySelectorAll('.fs-dd[data-open]').forEach(function (x) { if (x !== except) { x.removeAttribute('data-open'); x.querySelector('button').setAttribute('aria-expanded', 'false'); } }); }
   function fit() {
-    var h = document.querySelector('header > div'); if (!h) return;
-    d.classList.remove('fs-compact');
-    if (window.innerWidth >= 1024 && h.scrollWidth > h.clientWidth + 1) d.classList.add('fs-compact');
+    var rn = document.querySelector('header nav.lg\\:flex'); if (!rn || rn.parentNode.querySelector('.fs-nav')) return;
+    d.classList.add('fs-ddnav');
+    var nav = document.createElement('nav'); nav.className = 'fs-nav'; nav.setAttribute('aria-label', 'Main');
+    var ul = document.createElement('ul'); ul.className = 'fs-nav-list';
+    var mob = document.createElement('div'); mob.className = 'fs-mpanel'; mob.hidden = true; mob.id = 'fs-mpanel';
+    NAV.forEach(function (it, i) {
+      var li = document.createElement('li');
+      if (typeof it[1] === 'string') { li.appendChild(link(it[0], it[1], 'fs-top')); mob.appendChild(link(it[0], it[1], 'fs-mlink')); }
+      else {
+        li.className = 'fs-dd'; var b = document.createElement('button'); b.type = 'button'; b.className = 'fs-top';
+        b.setAttribute('aria-expanded', 'false'); b.setAttribute('aria-controls', 'fs-dd' + i); b.appendChild(document.createTextNode(it[0]));
+        var car = document.createElement('span'); car.className = 'fs-car'; car.setAttribute('aria-hidden', 'true'); b.appendChild(car);
+        var m = document.createElement('ul'); m.className = 'fs-menu'; m.id = 'fs-dd' + i;
+        var sec = document.createElement('div'); sec.className = 'fs-msec'; var st = document.createElement('p'); st.className = 'fs-mhead'; st.textContent = it[0]; sec.appendChild(st);
+        it[1].forEach(function (s) { var l2 = document.createElement('li'); l2.appendChild(link(s[0], s[1], 'fs-item')); m.appendChild(l2); sec.appendChild(link(s[0], s[1], 'fs-mlink')); if (cur(s[1])) b.classList.add('is-active'); });
+        var open = function (v) { closeAll(li); if (v) li.setAttribute('data-open', ''); else li.removeAttribute('data-open'); b.setAttribute('aria-expanded', v ? 'true' : 'false'); };
+        var ht = 0; b.onclick = function () { if (Date.now() - ht < 500) return open(true); open(!li.hasAttribute('data-open')); };
+        b.onkeydown = function (e) { if (e.key === 'ArrowDown') { e.preventDefault(); open(true); m.querySelector('a').focus(); } };
+        li.onmouseenter = function () { if (matchMedia('(hover:hover)').matches && !li.hasAttribute('data-open')) { ht = Date.now(); open(true); } };
+        li.onmouseleave = function () { if (matchMedia('(hover:hover)').matches) open(false); };
+        li.addEventListener('focusout', function (e) { if (!li.contains(e.relatedTarget)) open(false); });
+        m.onkeydown = function (e) { var as = [].slice.call(m.querySelectorAll('a')), k = as.indexOf(document.activeElement);
+          if (e.key === 'ArrowDown') { e.preventDefault(); as[(k + 1) % as.length].focus(); } if (e.key === 'ArrowUp') { e.preventDefault(); as[(k - 1 + as.length) % as.length].focus(); } };
+        li.appendChild(b); li.appendChild(m); mob.appendChild(sec);
+      }
+      ul.appendChild(li);
+    });
+    var rp = document.querySelector('header div.lg\\:hidden nav'); if (rp) { var ex = document.createElement('div'); ex.className = 'fs-mextra';
+      [].slice.call(rp.children).filter(function (x) { return !(x.tagName === 'A' && !x.querySelector('button')); }).forEach(function (x) { ex.appendChild(x.cloneNode(true)); }); mob.appendChild(ex); }
+    var mb = document.createElement('button'); mb.type = 'button'; mb.className = 'fs-mbtn'; mb.setAttribute('aria-expanded', 'false'); mb.setAttribute('aria-controls', 'fs-mpanel');
+    mb.setAttribute('aria-label', 'باز کردن منو'); mb.innerHTML = '<span></span><span></span><span></span>';
+    mb.onclick = function () { var v = mob.hidden; mob.hidden = !v; mb.setAttribute('aria-expanded', v ? 'true' : 'false'); };
+    nav.appendChild(ul); nav.appendChild(mb);
+    rn.parentNode.insertBefore(nav, rn.nextSibling);
+    (document.querySelector('header') || rn.parentNode).appendChild(mob);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { var o = document.querySelector('.fs-dd[data-open] button'); closeAll(); if (o) o.focus(); if (!mob.hidden) { mob.hidden = true; mb.setAttribute('aria-expanded', 'false'); mb.focus(); } } });
+    document.addEventListener('click', function (e) { if (!nav.contains(e.target)) closeAll(); });
   }
   function controls() {
     var h = document.querySelector('header > div'); if (!h || h.querySelector('.fs-ctrl')) return;
@@ -122,8 +161,7 @@
     function start() {
       if (started) return; started = true;
       controls();
-      window.addEventListener('resize', fit);
-      new MutationObserver(function () { controls(); }).observe(document.body, { childList: true, subtree: true });
+      new MutationObserver(function () { controls(); fit(); }).observe(document.body, { childList: true, subtree: true });
       if (lang === 'fa') return;
       attrs(); meta(); walk(document.body); note(); cards(); fit();
       d.classList.remove('i18n-pending');

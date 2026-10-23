@@ -19,9 +19,6 @@ html.i18n-pending body{opacity:0}
 .fs-ctrl{display:flex;align-items:center;gap:8px;flex-shrink:0;font:13px/1 system-ui,Tahoma,sans-serif}
 html[dir=ltr] .fs-ctrl{order:99}
 html[dir=ltr] .brand-shine-glint{animation-direction:reverse}
-html.fs-compact header nav.lg\:flex{display:none!important}
-html.fs-compact header button.lg\:hidden{display:inline-flex!important}html.fs-compact header div.lg\:hidden:not(.hidden){display:block!important}
-html.fs-compact header > div > div.flex.items-center.gap-1 > div.hidden{display:none!important}
 .fs-sw{position:relative;width:46px;height:24px;border-radius:999px;border:1px solid #d4af37;background:#0b1f3a;cursor:pointer;padding:0;flex-shrink:0}
 .fs-sw::after{content:"☾";position:absolute;top:2px;inset-inline-start:2px;width:18px;height:18px;border-radius:50%;background:#d4af37;color:#0b1f3a;font-size:12px;line-height:18px;text-align:center;transition:inset-inline-start .2s}
 html[data-theme=light] .fs-sw{background:#f3ead8}
@@ -41,3 +38,22 @@ html[data-lang=elv] .fs-elv{font-family:"Tengwar Ariador",system-ui,sans-serif;l
 html[data-lang=elv] .fs-elv[data-en]::after{content:" · " attr(data-en);font-family:system-ui,sans-serif;font-size:11px;opacity:.75;letter-spacing:0}
 .fs-lang{max-width:96px}
 @media (max-width:480px){html[dir=ltr] header a.shrink-0 span.text-right{font-size:12px;max-width:92px;white-space:normal;line-height:1.25}.fs-lang{max-width:78px;font-size:12px}header > div{gap:.5rem!important;padding-left:.6rem!important;padding-right:.6rem!important}}
+
+html.fs-ddnav header nav.lg\:flex,html.fs-ddnav header button.lg\:hidden,html.fs-ddnav header div.lg\:hidden{display:none!important}
+header{position:sticky}.fs-nav{display:flex;align-items:center}.fs-nav-list{display:none;list-style:none;margin:0;padding:0;gap:1.1rem;align-items:center}
+@media(min-width:1024px){.fs-nav-list{display:flex}.fs-mbtn{display:none!important}.fs-mpanel{display:none!important}}
+.fs-top{color:rgba(245,239,224,.8);font-size:.875rem;background:none;border:0;padding:.4rem 0;cursor:pointer;display:inline-flex;align-items:center;gap:.3rem;font-family:inherit;white-space:nowrap;transition:color .2s}
+.fs-top:hover,.fs-top.is-active,.fs-dd[data-open]>.fs-top{color:#d4a72c}.fs-top:focus-visible,.fs-item:focus-visible,.fs-mbtn:focus-visible{outline:2px solid #d4a72c;outline-offset:3px;border-radius:4px}
+.fs-car{width:.42rem;height:.42rem;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s}
+.fs-dd[data-open] .fs-car{transform:rotate(225deg) translate(-1px,-1px)}
+.fs-dd{position:relative}.fs-dd::after{content:"";position:absolute;inset-inline:0;top:100%;height:.7rem}
+.fs-menu{position:absolute;top:calc(100% + .6rem);inset-inline-start:-1rem;min-width:13rem;list-style:none;margin:0;padding:.45rem;background:#0f1d33;border:1px solid rgba(212,167,44,.35);border-radius:.8rem;box-shadow:0 18px 40px rgba(0,0,0,.35);opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .16s,transform .16s,visibility .16s;z-index:60}
+.fs-dd[data-open]>.fs-menu{opacity:1;visibility:visible;transform:none}
+.fs-item{display:block;padding:.55rem .8rem;border-radius:.5rem;color:rgba(245,239,224,.88);font-size:.875rem;white-space:nowrap}
+.fs-item:hover,.fs-item:focus{background:rgba(212,167,44,.12);color:#d4a72c}.fs-item.is-active{color:#d4a72c;box-shadow:inset 3px 0 0 #d4a72c}html[dir=rtl] .fs-item.is-active{box-shadow:inset -3px 0 0 #d4a72c}
+html[data-theme=light] .fs-menu{background:#13233d}
+.fs-mbtn{display:inline-flex;flex-direction:column;justify-content:center;gap:4px;width:40px;height:40px;background:none;border:0;cursor:pointer;padding:0 9px}.fs-mbtn span{display:block;height:2px;background:#f5efe0;border-radius:2px}
+.fs-mpanel{position:absolute;inset-inline:0;top:100%;background:#0f1d33;border-top:1px solid rgba(255,255,255,.1);padding:1rem 1.25rem;max-height:calc(100vh - 70px);overflow:auto;z-index:60}
+.fs-mpanel[hidden]{display:none}.fs-mlink{display:block;padding:.55rem 0;color:rgba(245,239,224,.85)}.fs-mlink.is-active{color:#d4a72c}
+.fs-msec{border-top:1px solid rgba(255,255,255,.08);margin-top:.35rem;padding-top:.35rem}.fs-mhead{color:#d4a72c;font-size:.75rem;letter-spacing:.04em;margin:.3rem 0 .1rem;opacity:.85}.fs-msec .fs-mlink{padding-inline-start:.75rem}
+.fs-mextra{border-top:1px solid rgba(255,255,255,.08);margin-top:.5rem;padding-top:.75rem;display:flex;flex-direction:column;gap:.75rem}
