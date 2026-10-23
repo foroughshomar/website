@@ -1,9 +1,9 @@
-// Builds English and Arabic versions of Persian article pages (/articles/<slug>/en/, /ar/).
+// Builds English versions (Arabic retired; /ar/ redirects to /en/) of Persian article pages (/articles/<slug>/en/, /ar/).
 // Library used by publish.mjs; run directly to backfill existing articles. Never logs the API key.
 import fs from 'node:fs'; import path from 'node:path';
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const A = p => path.join(ROOT, p);
-export const LANGS = ['en', 'ar'];
+export const LANGS = ['en']; // Persian + English only; ar/elv readers get English
 const TRF = A('automation/translations.json');
 export const loadTr = () => fs.existsSync(TRF) ? JSON.parse(fs.readFileSync(TRF, 'utf8')) : {};
 export const saveTr = t => fs.writeFileSync(TRF, JSON.stringify(t, null, 1));
@@ -67,7 +67,7 @@ const dehydrate = s => s.replace(/<script data-tsr-stream-part="">[\s\S]*?<\/scr
 
 export function altLinks(slug) {
   const u = l => `https://foroughshomar.ir/articles/${slug}/${l === 'fa' ? '' : l + '/'}`;
-  return ['fa', 'en', 'ar'].map(l => `<link rel="alternate" hreflang="${l}" href="${u(l)}"/>`).join('') + `<link rel="alternate" hreflang="x-default" href="${u('fa')}"/>`;
+  return ['fa', 'en'].map(l => `<link rel="alternate" hreflang="${l}" href="${u(l)}"/>`).join('') + `<link rel="alternate" hreflang="x-default" href="${u('fa')}"/>`;
 }
 const setAlt = (s, slug) => s.replace(/(<link rel="alternate" hreflang="[^"]+" href="[^"]*"\/>)+/, altLinks(slug));
 

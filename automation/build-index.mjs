@@ -21,7 +21,7 @@ export function buildIndex() {
       excerpt: unesc((c.match(/<p class="mt-4[^"]*">([\s\S]*?)<\/p>/) || [])[1] || ''),
       image: (c.match(/<img src="([^"]+)"/) || [])[1] || null });
     const it = items[items.length - 1], g = gregFromFa(date);
-    for (const l of ['en', 'ar']) {
+    for (const l of ['en']) {
       const t = tr[slug]?.[l];
       if (t && fs.existsSync(A(`articles/${slug}/${l}/index.html`))) {
         (it.translations ||= {})[l] = { title: t.title, excerpt: t.description || '', category: t.category || '', date: langDate(g, l),

@@ -61,7 +61,7 @@
     document.querySelectorAll('meta[name=description],meta[property="og:title"],meta[property="og:description"]').forEach(function (m) { var x = tr(m.content || ''); if (x) m.content = x; });
   }
   function alt(l) { var a = document.querySelector('link[rel=alternate][hreflang="' + l + '"]'); if (!a) return null; try { var u = new URL(a.href, location.href); return u.pathname !== location.pathname ? u.pathname + u.hash : null; } catch (e) { return null; } }
-  var contentLang = lang === 'elv' ? 'en' : lang;
+  var contentLang = lang === 'fa' ? 'fa' : 'en'; // articles: Persian or English only
   function note() {
     if (!/^\/articles\/[a-z0-9-]+/.test(location.pathname) || document.querySelector('.fs-note')) return;
     if (pageLang && !ELV) return;
