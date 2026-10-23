@@ -1,0 +1,32 @@
+/* Light theme + language/theme controls. Dark (navy) = original styles. */
+html[data-theme=light]{--color-navy:#fbf7ef;--color-navy-soft:#fff;--color-navy-deep:#f3ecdf;--color-paper:#fbf7ef;--color-cream:#1c2a3f;--color-ink:#1c2a3f;--color-muted:#6a5c3d;--color-line:#e4d7bb;--color-jade-soft:#e2efe9;color-scheme:light}
+html[data-theme=light] header,html[data-theme=light] footer,html[data-theme=light] .fs-keep-dark{--color-navy:#0b1f3a;--color-navy-soft:#132845;--color-navy-deep:#071526;--color-paper:#0b1f3a;--color-cream:#f3ead8;--color-ink:#f3ead8;--color-muted:#c4b89a;--color-line:#2c3f58;--color-jade-soft:#1a3d34}
+html[data-theme=light] .text-navy,html[data-theme=light] .\!text-navy{color:#0b1f3a!important}
+html[data-theme=light] .bg-cream,html[data-theme=light] .hover\:bg-cream:hover{background-color:#f3ead8}
+html[data-theme=light] .bg-jade.text-cream,html[data-theme=light] .\[\&\:nth-child\(2\)\]\:text-cream:nth-child(2){color:#fff}
+/* gold text needs a deeper tone on light surfaces to stay readable; gold fills/borders unchanged */
+html[data-theme=light] main .text-gold,html[data-theme=light] main .text-saffron{color:#9a7414}
+html[data-theme=light] main .bg-gold.text-gold,html[data-theme=light] main .bg-gold .text-gold{color:#0b1f3a}
+html[data-theme=light] .shadow-lg,html[data-theme=light] article.rounded-xl{box-shadow:0 1px 3px rgba(11,31,58,.06)}
+html[data-theme=light] img[src*="office"],html[data-theme=light] .bg-cover{filter:none}
+/* fonts per language */
+html[data-lang=en]{--font-sans:system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Vazirmatn",sans-serif;--font-display:Georgia,"Times New Roman","Noto Naskh Arabic",serif}
+html[data-lang=ar]{--font-sans:"Noto Naskh Arabic","Vazirmatn",Tahoma,serif;--font-display:"Noto Naskh Arabic",serif}
+html[data-lang=en] [lang=fa],html[data-lang=ar] [lang=fa]{font-family:"Noto Naskh Arabic","Vazirmatn",Tahoma,serif}
+html[data-lang=en] .text-right{text-align:left}
+html.i18n-pending body{opacity:0}
+/* controls */
+.fs-ctrl{display:flex;align-items:center;gap:8px;flex-shrink:0;font:13px/1 system-ui,Tahoma,sans-serif}
+html[dir=ltr] .fs-ctrl{order:99}
+.fs-sw{position:relative;width:46px;height:24px;border-radius:999px;border:1px solid #d4af37;background:#0b1f3a;cursor:pointer;padding:0;flex-shrink:0}
+.fs-sw::after{content:"☾";position:absolute;top:2px;inset-inline-start:2px;width:18px;height:18px;border-radius:50%;background:#d4af37;color:#0b1f3a;font-size:12px;line-height:18px;text-align:center;transition:inset-inline-start .2s}
+html[data-theme=light] .fs-sw{background:#f3ead8}
+html[data-theme=light] .fs-sw::after{content:"☀";inset-inline-start:24px}
+.fs-lang{height:28px;border-radius:8px;border:1px solid rgba(212,175,55,.6);background:#0b1f3a;color:#f3ead8;padding:0 6px;font:inherit;cursor:pointer}
+.fs-note{margin:12px auto;max-width:72rem;padding:10px 16px;border:1px solid rgba(212,175,55,.5);border-radius:10px;font-size:14px;line-height:1.7;background:rgba(212,175,55,.08)}
+@media (max-width:420px){.fs-ctrl{gap:5px}.fs-lang{padding:0 2px}.fs-sw{width:40px}html[data-theme=light] .fs-sw::after{inset-inline-start:18px}}
+html[data-theme=light] .brand-shine-text{color:#0b1f3a}
+@media (min-width:768px){html[data-lang=en] .md\:text-right{text-align:left}}
+header nav a{white-space:nowrap}
+@media (min-width:1024px) and (max-width:1279px){header nav{gap:.85rem!important;font-size:13px}header > div{gap:.6rem!important}html[data-lang=en] header nav{font-size:12.5px}}
+@media (min-width:1024px) and (max-width:1439px){header > div > div.flex.items-center.gap-1 > div.hidden{display:none!important}}
