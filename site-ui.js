@@ -142,7 +142,8 @@
     var setA = function () { sw.setAttribute('aria-checked', d.getAttribute('data-theme') === 'light' ? 'true' : 'false'); }; setA();
     sw.onclick = function () { var t = d.getAttribute('data-theme') === 'light' ? 'dark' : 'light'; d.setAttribute('data-theme', t); try { localStorage.setItem('fs-theme', t); } catch (e) {} setA(); };
     var s = document.createElement('select'); s.className = 'fs-lang'; s.setAttribute('aria-label', UI[lang].lang);
-    [['fa', 'فارسی'], ['en', 'English'], ['ar', 'العربية'], ['elv', 'Elvish ✦']].forEach(function (o) { var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; if (o[0] === lang) op.selected = true; s.appendChild(op); });
+    s.setAttribute('data-no-i18n', ''); var ph = document.createElement('option'); ph.value = ''; ph.textContent = 'زبان‌ها/Languages'; ph.disabled = true; ph.hidden = true; ph.selected = true; s.appendChild(ph);
+    [['fa', 'فارسی'], ['en', 'English'], ['ar', 'العربية'], ['elv', 'Elvish ✦']].forEach(function (o) { var op = document.createElement('option'); op.value = o[0]; op.textContent = (o[0] === lang ? '✓ ' : '') + o[1]; s.appendChild(op); });
     s.onchange = function () {
       var v = s.value; try { localStorage.setItem('fs-lang', v); } catch (e) {}
       var target = alt(v === 'elv' ? 'en' : v);
