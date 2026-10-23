@@ -49,7 +49,7 @@ const urls = [];
 for (const { f, url } of pages()) {
   let s = fs.readFileSync(A(f), 'utf8');
   const art = url.match(/^\/articles\/([a-z0-9-]+)\/(en\/)?$/); const slug = art?.[1]; const en = !!art?.[2]; const a = slug && idx.find(x => x.slug === slug);
-  // remove previous SEO tags (ours and the build's)
+  // remove previous SEO tags (ours and the build's). NOTE: <meta name="google-site-verification"> is never touched — keep it that way
   s = s.replace(/<!--seo-->[\s\S]*?<!--\/seo-->/g, '').replace(/<link rel="(?:canonical|alternate)" hreflang="[^"]*" href="[^"]*"\/?>/g, '')
     .replace(/<link rel="canonical"[^>]*>/g, '').replace(/<meta (?:property="og:[^"]*"|name="twitter:[^"]*")[^>]*>/g, '');
   const title0 = unesc((s.match(/<title>([^<]*)<\/title>/) || [])[1] || BRAND);
