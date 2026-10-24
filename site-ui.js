@@ -1,8 +1,8 @@
-/* Theme switch + language selector + client-side translation (fa default; en, ar, elv). */
+/* Theme switch + language selector + client-side translation (fa default; en, ar, elv, peo). */
 (function () {
   var d = document.documentElement, lang = d.getAttribute('data-lang') || 'fa', D = window.__I18N || {};
   var pageLang = d.getAttribute('data-page-lang');
-  var LTR = lang === 'en' || lang === 'elv', ELV = lang === 'elv';
+  var LTR = lang === 'en' || lang === 'elv' || lang === 'peo', ELV = lang === 'elv', PEO = lang === 'peo';
   var FA = /[\u0600-\u06FF]/, PFA = /[آ-یپچژگکی]/, IDIG = /[۰-۹٠-٩]/;
   var MON = { en: ['Farvardin','Ordibehesht','Khordad','Tir','Mordad','Shahrivar','Mehr','Aban','Azar','Dey','Bahman','Esfand'],
               ar: ['فروردين','أرديبهشت','خرداد','تير','مرداد','شهريور','مهر','آبان','آذر','دي','بهمن','إسفند'] };
@@ -10,7 +10,8 @@
   var UI = { fa: { theme: 'تم روشن / تاریک', lang: 'زبان' },
     en: { theme: 'Light / dark theme', lang: 'Language', note: 'This article is currently available in Persian only.' },
     ar: { theme: 'الوضع الفاتح / الداكن', lang: 'اللغة', note: 'هذا المقال متوفر حالياً باللغة الفارسية فقط.' },
-    elv: { theme: 'Light / dark theme', lang: 'Language', note: '✦ The Elvish scribes are still copying this scroll — here it is in the tongue of Men (English).' } };
+    elv: { theme: 'Light / dark theme', lang: 'Language', note: '✦ The Elvish scribes are still copying this scroll — here it is in the tongue of Men (English).' },
+    peo: { theme: 'Light / dark theme', lang: 'Language', note: 'Articles are not transliterated into Old Persian cuneiform; here is the English version.' } };
   // Sindarin-flavoured words (for fun); everything else stays English, written in Tengwar
   var SJN = { 'home': 'bar', 'contact': 'pedo', 'services': 'tegil', 'articles': 'teithant', 'about us': 'ammen', 'why us': 'manen ammen',
     'faq': 'maeth', 'welcome': 'mae govannen', 'thank you': 'hannon le', 'light': 'galad', 'friend': 'mellon', 'send request': 'anno',
@@ -22,6 +23,7 @@
   function tr0(s) {
     var k = s.replace(/\s+/g, ' ').trim();
     if (!k || !FA.test(k)) return null;
+    if (PEO) return window.__PEO ? window.__PEO(k) : null; // Persian text written in Old Persian cuneiform
     if (D[k]) return D[k];
     var m = k.match(/^([۰-۹]+) (\S+) ([۰-۹]+)$/), i;
     if (m && (i = FAM.indexOf(m[2])) > -1) return digits(m[1]) + ' ' + MON[lang === 'ar' ? 'ar' : 'en'][i] + ' ' + digits(m[3]);
@@ -39,6 +41,7 @@
     var t = tr(v), p = n.parentElement, out = null;
     if (t) {
       if (ELV && p && !p.closest('[data-no-i18n]')) { if (p.closest('form') && !p.hasAttribute('data-en') && t.length < 40) p.setAttribute('data-en', t); p.classList.add('fs-elv'); t = elvify(t); }
+      if (PEO && p) p.classList.add('fs-peo');
       out = v.match(/^\s*/)[0] + t + v.match(/\s*$/)[0];
     } else if (LTR && IDIG.test(v)) out = latin(v);
     if (out !== null) { last.set(n, out); n.nodeValue = out; }
@@ -88,7 +91,8 @@
     if (IDX) return go();
     fetch('/articles/index.json').then(function (r) { return r.json(); }).then(function (j) { IDX = {}; (j.articles || []).forEach(function (x) { IDX[x.slug] = x; }); go(); }).catch(function () {});
   }
-  function attrs() { var L = ELV ? 'sjn' : lang; if (d.lang !== L) d.lang = L; var R = lang === 'ar' ? 'rtl' : 'ltr'; if (d.dir !== R) d.dir = R; }
+  function attrs() { var L = ELV ? 'sjn' : lang;
+    if (PEO && !document.querySelector('meta[name=robots]')) { var mr = document.createElement('meta'); mr.name = 'robots'; mr.content = 'noindex'; document.head.appendChild(mr); } if (d.lang !== L) d.lang = L; var R = lang === 'ar' ? 'rtl' : 'ltr'; if (d.dir !== R) d.dir = R; }
   // Grouped header nav (desktop dropdowns + grouped mobile menu); replaces React's flat nav visually
   var NAV = [['خانه', '/'], ['خدمات', [['خدمات', '/services'], ['تقویم تکالیف', '/calendar'], ['نرم‌افزار سیمرغ شمار', '/software']]],
     ['درباره ما', [['درباره ما', '/about'], ['چرا ما', '/why-us'], ['پرسش‌ها', '/faq']]], ['مقالات', '/articles'], ['تماس', '/contact']];
@@ -143,10 +147,10 @@
     sw.onclick = function () { var t = d.getAttribute('data-theme') === 'light' ? 'dark' : 'light'; d.setAttribute('data-theme', t); try { localStorage.setItem('fs-theme', t); } catch (e) {} setA(); };
     var s = document.createElement('select'); s.className = 'fs-lang'; s.setAttribute('aria-label', UI[lang].lang);
     s.setAttribute('data-no-i18n', ''); var ph = document.createElement('option'); ph.value = ''; ph.textContent = 'زبان‌ها / Languages'; ph.disabled = true; ph.hidden = true; ph.selected = true; s.appendChild(ph);
-    [['fa', 'فارسی'], ['en', 'English'], ['ar', 'العربية'], ['elv', 'Elvish ✦']].forEach(function (o) { var op = document.createElement('option'); op.value = o[0]; op.textContent = (o[0] === lang ? '✓ ' : '') + o[1]; s.appendChild(op); });
+    [['fa', 'فارسی'], ['en', 'English'], ['ar', 'العربية'], ['elv', 'Elvish ✦'], ['peo', '𐎱𐎠𐎼𐎿 · میخی هخامنشی']].forEach(function (o) { var op = document.createElement('option'); op.value = o[0]; op.textContent = (o[0] === lang ? '✓ ' : '') + o[1]; s.appendChild(op); });
     s.onchange = function () {
       var v = s.value; try { localStorage.setItem('fs-lang', v); } catch (e) {}
-      var target = alt(v === 'elv' ? 'en' : v);
+      var target = alt(v === 'elv' || v === 'peo' ? 'en' : v);
       if (pageLang && !target) target = alt('fa');
       if (target) { location.href = target; return; }
       var u = new URL(location.href); u.searchParams.delete('lang'); location.href = u.toString();

@@ -15,7 +15,7 @@ html[data-lang=ar]{--font-sans:"Noto Naskh Arabic","Vazirmatn",Tahoma,serif;--fo
 html[data-lang=en] [lang=fa],html[data-lang=ar] [lang=fa],
 html[data-lang=elv] [lang=fa]{font-family:"Noto Naskh Arabic","Vazirmatn",Tahoma,serif}
 html[data-lang=en] .text-right,
-html[data-lang=elv] .text-right{text-align:left}
+html[data-lang=elv] .text-right,html[data-lang=peo] .text-right{text-align:left}
 html.i18n-pending body{opacity:0}
 /* controls */
 .fs-ctrl{display:flex;align-items:center;gap:8px;flex-shrink:0;font:13px/1 system-ui,Tahoma,sans-serif}
@@ -29,7 +29,7 @@ html[data-theme=light] .fs-sw::after{content:"☀";inset-inline-start:24px}
 .fs-note{margin:12px auto;max-width:72rem;padding:10px 16px;border:1px solid rgba(212,175,55,.5);border-radius:10px;font-size:14px;line-height:1.7;background:rgba(212,175,55,.08)}
 @media (max-width:420px){.fs-ctrl{gap:5px}.fs-lang{padding:0 2px}.fs-sw{width:40px}html[data-theme=light] .fs-sw::after{inset-inline-start:18px}}
 html[data-theme=light] .brand-shine-text{color:#0b1f3a}
-@media (min-width:768px){html[data-lang=en] .md\:text-right,html[data-lang=elv] .md\:text-right{text-align:left}}
+@media (min-width:768px){html[data-lang=en] .md\:text-right,html[data-lang=elv] .md\:text-right,html[data-lang=peo] .md\:text-right{text-align:left}}
 header nav a{white-space:nowrap}
 @media (min-width:1024px) and (max-width:1279px){header nav{gap:.85rem!important;font-size:13px}header > div{gap:.6rem!important}html[data-lang=en] header nav,html[data-lang=elv] header nav{font-size:12.5px}}
 @media (min-width:1024px) and (max-width:1439px){header > div > div.flex.items-center.gap-1 > div.hidden{display:none!important}}
@@ -74,3 +74,10 @@ html[data-theme=light] main a:hover>article[class*="bg-navy-soft"]{transform:tra
 html[lang=fa]:not([data-lang=en]):not([data-lang=ar]):not([data-lang=elv]) main :is(h1,h2,h3,h4):not(.brand-shine-text){font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif!important;line-height:1.9!important;font-weight:400!important;padding-block:.15em;overflow:visible}
 html[lang=fa]:not([data-lang=en]):not([data-lang=ar]):not([data-lang=elv]) main :is(h3,h4){font-size:1.12em}
 @media (max-width:767px){*:has(> img[src^="/brand/founder"]){margin-left:auto!important;margin-right:auto!important}img[src^="/brand/founder"]{margin-left:auto;margin-right:auto}}
+
+/* Old Persian cuneiform (peo): transliterated Persian, LTR; font fetched only when cuneiform glyphs appear */
+@font-face{font-family:"Noto Sans Old Persian";src:url(/fonts/NotoSansOldPersian-Regular.woff2) format("woff2");unicode-range:U+103A0-103DF;font-display:swap}
+html[data-lang=peo]{--font-sans:"Noto Sans Old Persian",system-ui,"Segoe UI",Roboto,Arial,sans-serif;--font-display:"Noto Sans Old Persian",Georgia,serif}
+html[data-lang=peo] [lang=fa]{font-family:"Noto Naskh Arabic","Vazirmatn",Tahoma,serif}
+html[data-lang=peo] .fs-peo{font-family:"Noto Sans Old Persian",system-ui,sans-serif!important;letter-spacing:.03em;word-break:break-word}
+.fs-lang option{font-family:system-ui,"Noto Sans Old Persian","Noto Naskh Arabic",sans-serif}
