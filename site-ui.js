@@ -151,7 +151,8 @@
       if (target) { location.href = target; return; }
       var u = new URL(location.href); u.searchParams.delete('lang'); location.href = u.toString();
     };
-    c.appendChild(sw); c.appendChild(s); h.insertBefore(c, h.firstChild);
+    var lw=document.createElement('span'); lw.className='fs-langw'; lw.title=UI[lang].lang; lw.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#d4af37" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9M12 3c-2.6 2.6-3.8 5.6-3.8 9s1.2 6.4 3.8 9"/></svg>'; lw.appendChild(s);
+    c.appendChild(sw); c.appendChild(lw); h.insertBefore(c, h.firstChild);
     fit();
   }
   // On a Persian article page with another language chosen, open that language's version

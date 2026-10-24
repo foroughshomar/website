@@ -64,3 +64,12 @@ html[data-theme=light] .fs-menu{background:#13233d}
 html[data-theme=light] main :is(.rounded-xl,.rounded-lg)[class*="bg-navy-soft"]{background-color:#fff;border-color:rgba(184,146,46,.38);box-shadow:0 1px 2px rgba(60,44,12,.05),0 6px 20px -6px rgba(60,44,12,.16);transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
 html[data-theme=light] main :is(.rounded-xl,.rounded-lg)[class*="bg-navy-soft"]:hover{transform:translateY(-3px);border-color:rgba(184,146,46,.6);box-shadow:0 2px 4px rgba(60,44,12,.06),0 14px 30px -10px rgba(60,44,12,.24)}
 html[data-theme=light] main a:hover>article[class*="bg-navy-soft"]{transform:translateY(-3px) scale(1.02)}
+
+/* language icon selector */
+.fs-langw{position:relative;display:inline-flex;align-items:center;justify-content:center;width:32px;height:28px;border-radius:8px;border:1px solid rgba(212,175,55,.6);background:#0b1f3a;flex-shrink:0;cursor:pointer}
+.fs-langw:hover,.fs-langw:focus-within{border-color:#d4af37;box-shadow:0 0 0 2px rgba(212,175,55,.25)}
+
+.fs-langw .fs-lang{position:absolute;inset:0;width:100%!important;min-width:0!important;max-width:none!important;height:100%;opacity:0;cursor:pointer;padding:0;border:0}
+/* Persian headings in Nastaliq (fa only) */
+html[lang=fa]:not([data-lang=en]):not([data-lang=ar]):not([data-lang=elv]) main :is(h1,h2,h3,h4):not(.brand-shine-text){font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif!important;line-height:1.9!important;font-weight:400!important;padding-block:.15em;overflow:visible}
+html[lang=fa]:not([data-lang=en]):not([data-lang=ar]):not([data-lang=elv]) main :is(h3,h4){font-size:1.12em}

@@ -12,7 +12,7 @@ console.log('Topic:', topic);
 const H = { 'Content-Type': 'application/json', Authorization: `Bearer ${KEY}` };
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
-const sys = `تو نویسنده ارشد یک دفتر مشاوره مالیاتی ایرانی به نام «فروغ شمار سیمرغ» هستی. به فارسی روان، طبیعی و حرفه‌ای بنویس، نه ترجمه‌ای و نه رباتیک. قوانین: هیچ شماره ماده، تبصره، بخشنامه، تاریخ یا نرخ دقیقی را که از درستی‌اش مطمئن نیستی ذکر نکن و چیزی از خودت نساز؛ به‌جای آن کلی و عملی توضیح بده و خواننده را به سامانه رسمی سازمان امور مالیاتی یا مشاور ارجاع بده. خروجی فقط JSON معتبر باشد.`;
+const sys = `تو نویسنده ارشد یک دفتر مشاوره مالیاتی ایرانی به نام «فروغ‌شمار سیمرغ» هستی. به فارسی روان، طبیعی و حرفه‌ای بنویس، نه ترجمه‌ای و نه رباتیک. قوانین: هیچ شماره ماده، تبصره، بخشنامه، تاریخ یا نرخ دقیقی را که از درستی‌اش مطمئن نیستی ذکر نکن و چیزی از خودت نساز؛ به‌جای آن کلی و عملی توضیح بده و خواننده را به سامانه رسمی سازمان امور مالیاتی یا مشاور ارجاع بده. خروجی فقط JSON معتبر باشد.`;
 const recent = JSON.parse(fs.readFileSync(A('articles/index.json'), 'utf8')).articles.slice(0, 12).map(x => `- ${x.title} → /articles/${x.slug}/`).join('\n');
 const usr = `موضوع: ${topic}
 یک مقاله کاربردی ۹۰۰ تا ۱۳۰۰ کلمه‌ای و سئو‌محور بنویس. قواعد سئو:
@@ -65,7 +65,7 @@ if ((art.faq || []).length) { body += H2('پرسش‌های متداول'); for 
 for (const x of conc) body += sec(x);
 body += `<p class="mt-8 rounded-lg border border-gold/30 p-4 text-sm leading-8 text-muted">این مطلب صرفاً جنبه آموزشی و اطلاع‌رسانی دارد و جایگزین مشاوره تخصصی نیست. قوانین و بخشنامه‌ها ممکن است تغییر کنند؛ پیش از هر تصمیم، آخرین مقررات را بررسی کنید یا با مشاور مالیاتی مشورت کنید.</p>`;
 const url = `/articles/${slug}`;
-const st = String(art.seo_title || art.title).trim(); const seoTitle = (st + ' | فروغ شمار سیمرغ').length <= 60 ? st + ' | فروغ شمار سیمرغ' : st;
+const st = String(art.seo_title || art.title).trim(); const seoTitle = (st + ' | فروغ‌شمار سیمرغ').length <= 60 ? st + ' | فروغ‌شمار سیمرغ' : st;
 const fill = s => s.replaceAll('{{IMG}}', img).replaceAll('{{URL}}', url).replaceAll('{{TITLE}}', esc(art.title))
   .replaceAll('{{SEOTITLE}}', esc(seoTitle)).replaceAll('{{ALT}}', esc(art.image_alt || art.title)).replaceAll('{{DESC}}', esc(art.description)).replaceAll('{{DATE}}', fadate);
 const page = fill(fs.readFileSync(A('automation/article-template.html'), 'utf8')).replace('{{BODY}}', body);

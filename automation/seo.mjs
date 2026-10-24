@@ -4,16 +4,16 @@ import fs from 'node:fs'; import path from 'node:path'; import { execSync } from
 import { gregFromFa } from './article-i18n.mjs';
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const A = p => path.join(ROOT, p);
-const SITE = 'https://foroughshomar.ir', BRAND = 'فروغ شمار سیمرغ', BRAND_EN = 'Forough Shomar Simorgh';
+const SITE = 'https://foroughshomar.ir', BRAND = 'فروغ‌شمار سیمرغ', BRAND_EN = 'Forough Shomar Simorgh';
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const unesc = s => String(s).replace(/<!-- -->/g, '').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#x27;|&#39;/g, "'").replace(/&amp;/g, '&');
 const strip = s => unesc(String(s).replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
 const clip = (s, n) => s.length <= n ? s : s.slice(0, n - 1).replace(/\s+\S*$/, '') + '…';
 const ld = o => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`;
 const DESC = { // pages whose built description is generic or duplicated
-  '/privacy/': 'سیاست حریم خصوصی فروغ شمار سیمرغ: چه اطلاعاتی از فرم رزرو مشاوره مالیاتی جمع می‌شود، چگونه نگهداری می‌شود و چه حقوقی دارید.',
-  '/terms/': 'شرایط استفاده از سایت و خدمات مشاوره مالیاتی فروغ شمار سیمرغ؛ دامنه مسئولیت، رزرو جلسه و استفاده از محتوای آموزشی.',
-  '/': 'فروغ شمار سیمرغ؛ مشاوره مالیاتی و حسابداری برای اشخاص حقیقی، شرکت‌ها و صاحبان مشاغل: اظهارنامه، سامانه مؤدیان، تبصره ۱۰۰ و دفاع پرونده.',
+  '/privacy/': 'سیاست حریم خصوصی فروغ‌شمار سیمرغ: چه اطلاعاتی از فرم رزرو مشاوره مالیاتی جمع می‌شود، چگونه نگهداری می‌شود و چه حقوقی دارید.',
+  '/terms/': 'شرایط استفاده از سایت و خدمات مشاوره مالیاتی فروغ‌شمار سیمرغ؛ دامنه مسئولیت، رزرو جلسه و استفاده از محتوای آموزشی.',
+  '/': 'فروغ‌شمار سیمرغ؛ مشاوره مالیاتی و حسابداری برای اشخاص حقیقی، شرکت‌ها و صاحبان مشاغل: اظهارنامه، سامانه مؤدیان، تبصره ۱۰۰ و دفاع پرونده.',
 };
 const ORG = { '@type': ['Organization', 'AccountingService'], '@id': SITE + '/#org', name: BRAND, alternateName: BRAND_EN, url: SITE + '/',
   email: 'info@foroughshomar.ir', logo: SITE + '/brand/logo.jpg', image: SITE + '/og.jpg', areaServed: 'IR', knowsLanguage: ['fa', 'en'] };
@@ -55,7 +55,7 @@ for (const { f, url } of pages()) {
   const title0 = unesc((s.match(/<title>([^<]*)<\/title>/) || [])[1] || BRAND);
   let desc = DESC[url] || unesc((s.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '');
   let title = title0;
-  if (en) title = (a?.translations?.en?.title || title0).replace(/(\s*\|\s*(?:فروغ شمار سیمرغ|Forough Shomar Simorgh))+$/, '') + ' | ' + BRAND_EN;
+  if (en) title = (a?.translations?.en?.title || title0).replace(/(\s*\|\s*(?:فروغ‌شمار سیمرغ|Forough Shomar Simorgh))+$/, '') + ' | ' + BRAND_EN;
   desc = clip(desc, 160);
   s = s.replace(/<title>[^<]*<\/title>/, `<title>${esc(title)}</title>`).replace(/<meta name="description" content="[^"]*"\/?>/, `<meta name="description" content="${esc(desc)}"/>`);
   if (!/<meta name="description"/.test(s)) s = s.replace('</title>', `</title><meta name="description" content="${esc(desc)}"/>`);
@@ -90,7 +90,7 @@ for (const { f, url } of pages()) {
     + `<meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="${esc(title)}"/><meta name="twitter:description" content="${esc(desc)}"/><meta name="twitter:image" content="${img}"/>`
     + (url === '/404/' ? '<meta name="robots" content="noindex"/>' : '') + ld({ '@context': 'https://schema.org', '@graph': graph }) + '<!--/seo-->';
   s = s.replace(/<head>/, '<head>' + head);
-  if (url === '/contact/') s = s.replace(/(<img src="\/brand\/office-[a-z]+\.jpg") alt=""/g, '$1 alt="دفتر مشاوره مالیاتی فروغ شمار سیمرغ"');
+  if (url === '/contact/') s = s.replace(/(<img src="\/brand\/office-[a-z]+\.jpg") alt=""/g, '$1 alt="دفتر مشاوره مالیاتی فروغ‌شمار سیمرغ"');
   fs.writeFileSync(A(f), s);
   if (url !== '/404/') urls.push({ loc: canon, lastmod: lastmod(f), alts, pri: url === '/' ? '1.0' : slug ? '0.7' : '0.8' });
 }
