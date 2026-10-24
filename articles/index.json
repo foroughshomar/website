@@ -1,7 +1,27 @@
 {
- "updated": "2026-10-23T19:14:59.982Z",
- "count": 5,
+ "updated": "2026-10-24T03:59:24.848Z",
+ "count": 6,
  "articles": [
+  {
+   "slug": "soorathesab-electronic",
+   "url": "https://foroughshomar.ir/articles/soorathesab-electronic",
+   "title": "صورتحساب الکترونیکی چیست و چه کسانی باید آن را صادر کنند؟",
+   "category": "مالیات الکترونیک",
+   "date_fa": "۰۲-۰۸-۱۴۰۵",
+   "published_at": "2026-10-24T03:59:15.942Z",
+   "excerpt": "صورتحساب الکترونیکی چیست؟ در این مقاله به زبان ساده توضیح می‌دهیم که این صورتحساب‌ها چه هستند، کدام مشاغل موظف به صدور آن هستند و چگونه باید از سامانه مؤدیان شروع کنید. راهنمای کاربردی و کامل.",
+   "image": "/articles/soorathesab-electronic.jpg",
+   "translations": {
+    "en": {
+     "title": "What Is an Electronic Invoice and Who Must Issue It?",
+     "excerpt": "What is an electronic invoice? This article explains in simple terms what these invoices are, which businesses are required to issue them, and how to get started with the Taxpayers' System (Samaneh-ye Moadian). A complete, practical guide.",
+     "category": "Electronic Taxation",
+     "date": "24 October 2026",
+     "path": "/articles/soorathesab-electronic/en/",
+     "url": "https://foroughshomar.ir/articles/soorathesab-electronic/en/"
+    }
+   }
+  },
   {
    "slug": "sabt-nam-samane-modian-kasb-o-kar-kuchak",
    "url": "https://foroughshomar.ir/articles/sabt-nam-samane-modian-kasb-o-kar-kuchak",
