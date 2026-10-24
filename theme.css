@@ -73,3 +73,4 @@ html[data-theme=light] main a:hover>article[class*="bg-navy-soft"]{transform:tra
 /* Persian headings in Nastaliq (fa only) */
 html[lang=fa]:not([data-lang=en]):not([data-lang=ar]):not([data-lang=elv]) main :is(h1,h2,h3,h4):not(.brand-shine-text){font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif!important;line-height:1.9!important;font-weight:400!important;padding-block:.15em;overflow:visible}
 html[lang=fa]:not([data-lang=en]):not([data-lang=ar]):not([data-lang=elv]) main :is(h3,h4){font-size:1.12em}
+@media (max-width:767px){*:has(> img[src^="/brand/founder"]){margin-left:auto!important;margin-right:auto!important}img[src^="/brand/founder"]{margin-left:auto;margin-right:auto}}
