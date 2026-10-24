@@ -38,7 +38,7 @@ ${linkList}
 "question" (سؤال مشخص)، "answer"، "keyword"، "title" (عنوان H1 جذاب، شامل کلیدواژه)، "seo_title"، "description"، "category" (یک یا دو کلمه)، "slug" (لاتین کوچک با خط تیره، ۳ تا ۵ کلمه فینگلیش بر پایه کلیدواژه)، "image_alt" (توضیح فارسی تصویر شامل کلیدواژه)، "intro" (پاراگراف اول)، "sections": آرایه‌ای از {"heading": عنوان H2, "paragraphs": [..], "subsections": [{"heading": عنوان H3, "paragraphs": [..]}]}، "faq": [{"q": .., "a": ..}].
 آخرین بخش heading «جمع‌بندی» داشته باشد. در پاراگراف‌ها فقط تگ <a> مجاز است.`;
 const r = await fetch('https://api.x.ai/v1/chat/completions', { method: 'POST', headers: H, body: JSON.stringify({
-  model: process.env.XAI_MODEL || 'grok-4.20-0309-non-reasoning', temperature: 0.6,
+  model: process.env.XAI_MODEL || 'grok-4.7', temperature: 0.6,
   response_format: { type: 'json_object' }, messages: [{ role: 'system', content: sys }, { role: 'user', content: usr }] }) });
 if (!r.ok) { console.error('Text API error', r.status, (await r.text()).slice(0, 300)); process.exit(1); }
 const j = await r.json(); console.log('Usage:', JSON.stringify(j.usage || {}));

@@ -43,7 +43,7 @@ export async function translateArticle(src, lang, key) {
   const usr = JSON.stringify({ title: src.title, description: src.description, category: src.category, body_html: src.body_html });
   const r = await fetch('https://api.x.ai/v1/chat/completions', { method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
-    body: JSON.stringify({ model: process.env.XAI_MODEL || 'grok-4.20-0309-non-reasoning', temperature: 0.3, response_format: { type: 'json_object' },
+    body: JSON.stringify({ model: process.env.XAI_MODEL || 'grok-4.7', temperature: 0.3, response_format: { type: 'json_object' },
       messages: [{ role: 'system', content: sys }, { role: 'user', content: `Translate the values of this JSON (keys: title, description, category, body_html) and return the same keys:\n${usr}` }] }) });
   if (!r.ok) throw new Error(`translate ${lang} status ${r.status} ${(await r.text()).slice(0, 200)}`);
   const j = await r.json();

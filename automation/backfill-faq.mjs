@@ -10,7 +10,7 @@ for (const slug of fs.readdirSync(A('articles')).filter(d => fs.existsSync(A(`ar
   let s = fs.readFileSync(fa, 'utf8'); if (/پرسش‌های متداول/.test(s)) continue;
   const text = s.split('<div class="space-y-5">')[1].split('<!--srcs-->')[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
   const r = await fetch('https://api.x.ai/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${KEY}` },
-    body: JSON.stringify({ model: process.env.XAI_MODEL || 'grok-4.20-0309-non-reasoning', temperature: 0.2, response_format: { type: 'json_object' }, messages: [
+    body: JSON.stringify({ model: process.env.XAI_MODEL || 'grok-4.7', temperature: 0.2, response_format: { type: 'json_object' }, messages: [
       { role: 'system', content: 'You write FAQ sections for an Iranian tax consultancy. Use ONLY facts stated in the given article; add no new numbers, dates, article numbers or rates. Output JSON only.' },
       { role: 'user', content: `Article (Persian):\n${text}\n\nWrite 3 questions real Iranian taxpayers search on Google, each answered in 1–3 sentences strictly from the article. Return {"fa":[{"q","a"}],"en":[{"q","a"}]} where en is a natural English translation of fa.` }] }) });
   if (!r.ok) { console.error(slug, r.status); continue; }
