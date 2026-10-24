@@ -1,7 +1,7 @@
 // SEO pass over the built site (idempotent): head tags, JSON-LD, related links, alt texts, sitemap.xml, robots.txt.
 // Run after every publish: node automation/seo.mjs
 import fs from 'node:fs'; import path from 'node:path'; import { execSync } from 'node:child_process';
-import { gregFromFa } from './article-i18n.mjs';
+import { gregFromFa } from './article-i18n.mjs'; import { pickLinks, isOfficial } from './official-links.mjs';
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const A = p => path.join(ROOT, p);
 const SITE = 'https://foroughshomar.ir', BRAND = 'فروغ‌شمار سیمرغ', BRAND_EN = 'Forough Shomar Simorgh';
@@ -17,6 +17,16 @@ const DESC = { // pages whose built description is generic or duplicated
 };
 const ORG = { '@type': ['Organization', 'AccountingService'], '@id': SITE + '/#org', name: BRAND, alternateName: BRAND_EN, url: SITE + '/',
   email: 'info@foroughshomar.ir', logo: SITE + '/brand/logo.jpg', image: SITE + '/og.jpg', areaServed: 'IR', knowsLanguage: ['fa', 'en'] };
+const AUTHOR = { '@type': 'Person', '@id': SITE + '/#hamed', name: 'دکتر حامد ملاطفی', alternateName: 'Dr. Hamed Molatefi', jobTitle: 'مشاور مالیاتی', url: SITE + '/about/', worksFor: { '@id': SITE + '/#org' } };
+const faDate = iso => new Intl.DateTimeFormat('fa-IR-u-ca-persian', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(iso));
+function byline(en, mod) { return `<!--byline--><p class="mb-6 text-sm leading-8 text-muted" data-no-i18n${en ? ' lang="en" dir="ltr"' : ''}>${en
+  ? `By <a class="text-gold hover:underline" href="/about/?lang=en" rel="author">Dr. Hamed Molatefi</a>, tax adviser · Reviewed ${new Intl.DateTimeFormat('en-GB', { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(mod))}`
+  : `نویسنده: <a class="text-gold hover:underline" href="/about/" rel="author">دکتر حامد ملاطفی</a>، مشاور مالیاتی · آخرین بازبینی: ${faDate(mod)}`}</p><!--/byline-->`; }
+function sources(faText, en, bodyHtml) { // links already cited in the body + topic picks from the whitelist, 2–4 total
+  const cited = [...bodyHtml.matchAll(/href="(https:\/\/[^"]+)"/g)].map(m => m[1]).filter(isOfficial);
+  const L = JSON.parse(fs.readFileSync(A('automation/official-links.json'), 'utf8')).links;
+  const list = [...new Set([...cited.map(u => L.find(l => l.url === u || l.url === u + '/')), ...pickLinks(faText)])].filter(Boolean).slice(0, 4);
+  return `<!--srcs--><section class="mt-8 rounded-xl border border-gold/25 p-5" data-no-i18n${en ? ' lang="en" dir="ltr"' : ''}><h2 class="text-lg font-medium text-navy">${en ? 'Official sources' : 'منابع رسمی برای پیگیری'}</h2><p class="mt-2 text-sm leading-8 text-muted">${en ? 'Check the latest rules and deadlines on the official websites:' : 'آخرین قوانین، بخشنامه‌ها و مهلت‌ها را در این سایت‌های رسمی ببینید:'}</p><ul class="mt-3 list-disc space-y-1 ps-5 text-sm leading-8">${list.map(l => `<li><a class="text-gold hover:underline" href="${l.url}" target="_blank" rel="noopener">${esc(en ? l.en : l.fa)}</a></li>`).join('')}</ul></section><!--/srcs-->`; }
 const lastmod = f => { try { const d = execSync(`git log -1 --format=%cI -- "${f}"`, { cwd: ROOT }).toString().trim(); if (d) return d.slice(0, 10); } catch {} return new Date().toISOString().slice(0, 10); };
 const idx = JSON.parse(fs.readFileSync(A('articles/index.json'), 'utf8')).articles;
 const pubDate = a => (a.published_at ? new Date(a.published_at) : gregFromFa(a.date_fa) || new Date()).toISOString().slice(0, 10);
@@ -68,7 +78,7 @@ for (const { f, url } of pages()) {
   if (slug && a) {
     const h = en ? (a.translations?.en?.title || title) : a.title;
     graph.push({ '@type': 'Article', headline: clip(h, 110), description: desc, image: [img], inLanguage: en ? 'en' : 'fa', datePublished: pubDate(a), dateModified: lastmod(f),
-      mainEntityOfPage: canon, author: { '@id': SITE + '/#org' }, publisher: { '@id': SITE + '/#org' } });
+      mainEntityOfPage: canon, author: AUTHOR, publisher: { '@id': SITE + '/#org' } });
     graph.push({ '@type': 'BreadcrumbList', itemListElement: [
       { '@type': 'ListItem', position: 1, name: en ? 'Home' : 'خانه', item: SITE + '/' + (en ? '?lang=en' : '') },
       { '@type': 'ListItem', position: 2, name: en ? 'Articles' : 'مقالات', item: SITE + '/articles/' + (en ? '?lang=en' : '') },
@@ -77,6 +87,15 @@ for (const { f, url } of pages()) {
     s = s.replace(/<script data-tsr-stream-part="">[\s\S]*?<\/script>/g, '').replace(/<script type="module"[^>]*><\/script>/g, '').replace(/<link rel="modulepreload"[^>]*>/g, '');
     // related links + hero alt
     s = s.replace(/<!--related-->[\s\S]*?<!--\/related-->/g, '');
+    // byline (E-E-A-T) under the date, official sources before the disclaimer, external links open safely
+    s = s.replace(/<!--byline-->[\s\S]*?<!--\/byline-->/g, '').replace(/<!--srcs-->[\s\S]*?<!--\/srcs-->/g, '');
+    s = s.replace(/(<p class="mb-4 text-sm text-muted">[^<]*<\/p>)/, '$1' + byline(en, lastmod(f)));
+    const faHtml = en ? fs.readFileSync(A(`articles/${slug}/index.html`), 'utf8') : s;
+    const faText = a.title + ' ' + strip((faHtml.split('<div class="space-y-5">')[1] || '').split('<!--srcs-->')[0].split('</div><a class="mt-12')[0]);
+    if (!/<p class="mt-8 rounded-lg border border-gold\/30 p-4 text-sm leading-8 text-muted">/.test(s)) // older pages: add the standard disclaimer
+      s = s.replace('</div><a class="mt-12', `<p class="mt-8 rounded-lg border border-gold/30 p-4 text-sm leading-8 text-muted">${en ? 'This article is for general information and education only and is not a substitute for professional advice. Laws and circulars can change; check the latest regulations or consult a tax adviser before making any decision.' : 'این مطلب صرفاً جنبه آموزشی و اطلاع‌رسانی دارد و جایگزین مشاوره تخصصی نیست. قوانین و بخشنامه‌ها ممکن است تغییر کنند؛ پیش از هر تصمیم، آخرین مقررات را بررسی کنید یا با مشاور مالیاتی مشورت کنید.'}</p></div><a class="mt-12`);
+    s = s.replace(/(<p class="mt-8 rounded-lg border border-gold\/30 p-4 text-sm leading-8 text-muted">)/, sources(faText, en, s) + '$1');
+    s = s.replace(/<a ([^>]*?)href="(https:\/\/[^"]+)"([^>]*)>/g, (m, b, u, c) => isOfficial(u) && !/target=/.test(b + c) ? `<a ${b}href="${u}"${c} target="_blank" rel="noopener">` : m);
     s = s.replace(/(<a class="mt-12 inline-block text-sm text-gold)/, related(slug, en ? 'en' : 'fa') + '$1');
     s = s.replace(/(<img src="\/articles\/[^"]+" alt=")[^"]*(")/, `$1${esc(h)}$2`);
   }

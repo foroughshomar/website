@@ -1,5 +1,6 @@
 // Daily article publisher. Reads XAI_API_KEY from env; never logs it.
-import fs from 'node:fs'; import path from 'node:path'; import { buildIndex } from './build-index.mjs'; import { makeVersions } from './article-i18n.mjs';
+import fs from 'node:fs'; import path from 'node:path'; import { buildIndex } from './build-index.mjs'; import { makeVersions } from './article-i18n.mjs'; import { pickLinks, isOfficial } from './official-links.mjs';
+const DRY = !!process.env.DRY_RUN; // DRY_RUN=1: write a sample to $DRY_OUT (default /tmp/sample-article) only; nothing on the site changes
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const A = p => path.join(ROOT, p);
 const KEY = process.env.XAI_API_KEY; if (!KEY) { console.error('XAI_API_KEY missing'); process.exit(1); }
@@ -12,9 +13,15 @@ console.log('Topic:', topic);
 const H = { 'Content-Type': 'application/json', Authorization: `Bearer ${KEY}` };
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
-const sys = `تو نویسنده ارشد یک دفتر مشاوره مالیاتی ایرانی به نام «فروغ‌شمار سیمرغ» هستی. به فارسی روان، طبیعی و حرفه‌ای بنویس، نه ترجمه‌ای و نه رباتیک. قوانین: هیچ شماره ماده، تبصره، بخشنامه، تاریخ یا نرخ دقیقی را که از درستی‌اش مطمئن نیستی ذکر نکن و چیزی از خودت نساز؛ به‌جای آن کلی و عملی توضیح بده و خواننده را به سامانه رسمی سازمان امور مالیاتی یا مشاور ارجاع بده. خروجی فقط JSON معتبر باشد.`;
+const allTitles = JSON.parse(fs.readFileSync(A('articles/index.json'), 'utf8')).articles.map(x => '- ' + x.title).join('\n');
+const links = pickLinks(topic);
+const linkList = links.map(l => `- ${l.url} → ${l.fa}`).join('\n');
+const sys = `تو نویسنده ارشد یک دفتر مشاوره مالیاتی ایرانی به نام «فروغ‌شمار سیمرغ» هستی. به فارسی روان، طبیعی و حرفه‌ای بنویس، نه ترجمه‌ای و نه رباتیک. قوانین: هیچ شماره ماده، تبصره، بخشنامه، تاریخ یا نرخ دقیقی را که از درستی‌اش مطمئن نیستی ذکر نکن و چیزی از خودت نساز؛ به‌جای آن کلی و عملی توضیح بده و خواننده را به سامانه رسمی سازمان امور مالیاتی یا مشاور ارجاع بده. خروجی فقط JSON معتبر باشد. اصول محتوای مفید گوگل (E-E-A-T) را رعایت کن: برای انسان بنویس نه موتور جست‌وجو، از تجربه عملی یک مشاور مالیاتی بگو (مثال‌های فرضی را صریحاً «مثال فرضی» بنام و بدون نام واقعی)، هر عدد یا نرخ یا تاریخ را فقط اگر از منبع رسمی و قطعی است بیاور و منبعش را بگو، و اصلاً لینک یا آدرس اینترنتی‌ای جز فهرست مجاز نساز.`;
 const recent = JSON.parse(fs.readFileSync(A('articles/index.json'), 'utf8')).articles.slice(0, 12).map(x => `- ${x.title} → /articles/${x.slug}/`).join('\n');
 const usr = `موضوع: ${topic}
+سؤال اصلی: این موضوع کلی است؛ آن را به یک «سؤال واقعی و مشخص» تبدیل کن که یک مؤدی ایرانی دقیقاً در گوگل می‌پرسد (مثلاً «اگر اظهارنامه ارزش افزوده را دیر بدهم چه می‌شود؟»). این سؤال نباید با عنوان هیچ‌کدام از مقاله‌های موجود زیر تکراری یا خیلی نزدیک باشد:
+${allTitles}
+پاسخ مستقیم و کوتاه سؤال (۲ تا ۳ جمله) را در کلید "answer" بده تا بالای مقاله نمایش داده شود.
 یک مقاله کاربردی ۹۰۰ تا ۱۳۰۰ کلمه‌ای و سئو‌محور بنویس. قواعد سئو:
 - یک «کلیدواژه اصلی» فارسی (عبارتی که مردم در گوگل جست‌وجو می‌کنند) انتخاب کن؛ این عبارت باید عیناً در title، در اولین پاراگراف (intro) و حداقل در یکی از عنوان‌های H2 بیاید، طبیعی و بدون تکرار زیاد.
 - "seo_title": حداکثر ۶۰ کاراکتر، کلیدواژه در ابتدای آن.
@@ -22,9 +29,13 @@ const usr = `موضوع: ${topic}
 - ساختار: چند بخش H2 و در صورت نیاز زیربخش H3؛ پاراگراف‌های کوتاه.
 - در متن، به ۲ یا ۳ مقاله مرتبط از فهرست زیر لینک بده (با تگ <a href="مسیر">متن لینک توصیفی</a> داخل پاراگراف‌ها) و یک‌بار هم به صفحه رزرو /contact/ یا خدمات /services/ لینک بده. فقط از همین مسیرها استفاده کن:
 ${recent}
+- لینک به منابع رسمی: در ۲ تا ۴ جای مناسب از متن، با تگ <a href="آدرس کامل">متن توصیفی</a> به منابع رسمی زیر لینک بده و خواننده را برای جزئیات و آخرین بخشنامه به آن‌ها ارجاع بده. فقط و فقط از همین آدرس‌ها، عیناً:
+${linkList}
+- لینک داخلی: علاوه بر بالا، اگر موضوع به موعدها مربوط است به /calendar/ (تقویم تکالیف مالیاتی) لینک بده.
+- حداقل یک بخش «مثال عملی» (H2 یا H3) با یک سناریوی فرضی گام‌به‌گام داشته باش.
 - "faq": ۳ تا ۴ پرسش واقعی کاربران با پاسخ کوتاه و دقیق.
 خروجی JSON با کلیدهای:
-"keyword"، "title" (عنوان H1 جذاب، شامل کلیدواژه)، "seo_title"، "description"، "category" (یک یا دو کلمه)، "slug" (لاتین کوچک با خط تیره، ۳ تا ۵ کلمه فینگلیش بر پایه کلیدواژه)، "image_alt" (توضیح فارسی تصویر شامل کلیدواژه)، "intro" (پاراگراف اول)، "sections": آرایه‌ای از {"heading": عنوان H2, "paragraphs": [..], "subsections": [{"heading": عنوان H3, "paragraphs": [..]}]}، "faq": [{"q": .., "a": ..}].
+"question" (سؤال مشخص)، "answer"، "keyword"، "title" (عنوان H1 جذاب، شامل کلیدواژه)، "seo_title"، "description"، "category" (یک یا دو کلمه)، "slug" (لاتین کوچک با خط تیره، ۳ تا ۵ کلمه فینگلیش بر پایه کلیدواژه)، "image_alt" (توضیح فارسی تصویر شامل کلیدواژه)، "intro" (پاراگراف اول)، "sections": آرایه‌ای از {"heading": عنوان H2, "paragraphs": [..], "subsections": [{"heading": عنوان H3, "paragraphs": [..]}]}، "faq": [{"q": .., "a": ..}].
 آخرین بخش heading «جمع‌بندی» داشته باشد. در پاراگراف‌ها فقط تگ <a> مجاز است.`;
 const r = await fetch('https://api.x.ai/v1/chat/completions', { method: 'POST', headers: H, body: JSON.stringify({
   model: process.env.XAI_MODEL || 'grok-4.20-0309-non-reasoning', temperature: 0.6,
@@ -37,7 +48,7 @@ while (fs.existsSync(A(`articles/${slug}`))) slug += '-2';
 
 // Header image (16:9), fallback to default
 let img = '/og.jpg';
-try {
+if (!DRY) try {
   const ir = await fetch('https://api.x.ai/v1/images/generations', { method: 'POST', headers: H, body: JSON.stringify({
     model: process.env.XAI_IMAGE_MODEL || 'grok-imagine-image', n: 1, response_format: 'b64_json', aspect_ratio: '16:9',
     prompt: `Elegant editorial header illustration for a Persian tax-consulting article about: ${art.title} (${topic}). Abstract, calm, professional; deep navy and gold palette; documents, ledgers, calculators, geometric Persian patterns. Absolutely no text, no letters, no numbers, no people, no faces, no logos. Wide 16:9 composition.` }) });
@@ -52,11 +63,12 @@ const date = new Intl.DateTimeFormat('fa-IR-u-ca-persian', { timeZone: 'Asia/Teh
   .formatToParts(new Date()).reduce((o, p) => (o[p.type] = p.value, o), {});
 const fadate = `${date.day}-${date.month}-${date.year}`;
 // paragraphs: escape everything, then re-allow internal <a href="/..."> links only
-const linkify = t => esc(t).replace(/&lt;a href=&quot;(\/[a-z0-9\/-]*)&quot;&gt;([\s\S]*?)&lt;\/a&gt;/g, '<a class="text-gold underline" href="$1">$2</a>');
+const linkify = t => esc(t).replace(/&lt;a href=&quot;(\/[a-z0-9\/-]*)&quot;&gt;([\s\S]*?)&lt;\/a&gt;/g, '<a class="text-gold underline" href="$1">$2</a>')
+  .replace(/&lt;a href=&quot;(https:\/\/[^&\s]+)&quot;&gt;([\s\S]*?)&lt;\/a&gt;/g, (m, u, t) => isOfficial(u) ? `<a class="text-gold underline" href="${u}" target="_blank" rel="noopener">${t}</a>` : t);
 const P = t => `<p class="text-base leading-9 text-ink">${linkify(t)}</p>`;
 const H2 = t => `<h2 class="pt-4 text-xl font-medium leading-loose text-navy">${esc(t)}</h2>`;
 const H3 = t => `<h3 class="pt-2 text-lg font-medium leading-loose text-navy">${esc(t)}</h3>`;
-let body = art.intro ? P(art.intro) : '';
+let body = (art.answer ? `<div class="rounded-xl border border-gold/40 bg-gold/5 p-5"><p class="text-sm font-medium text-gold">پاسخ کوتاه</p><p class="mt-2 text-base leading-9 text-ink">${esc(art.answer)}</p></div>` : '') + (art.intro ? P(art.intro) : '');
 const conc = (art.sections || []).filter(x => /جمع‌?بندی/.test(x.heading || '')), main = (art.sections || []).filter(x => !conc.includes(x));
 const sec = x => { let o = x.heading ? H2(x.heading) : ''; for (const p of x.paragraphs || []) o += P(p);
   for (const ss of x.subsections || []) { if (ss.heading) o += H3(ss.heading); for (const p of ss.paragraphs || []) o += P(p); } return o; };
@@ -69,6 +81,9 @@ const st = String(art.seo_title || art.title).trim(); const seoTitle = (st + ' |
 const fill = s => s.replaceAll('{{IMG}}', img).replaceAll('{{URL}}', url).replaceAll('{{TITLE}}', esc(art.title))
   .replaceAll('{{SEOTITLE}}', esc(seoTitle)).replaceAll('{{ALT}}', esc(art.image_alt || art.title)).replaceAll('{{DESC}}', esc(art.description)).replaceAll('{{DATE}}', fadate);
 const page = fill(fs.readFileSync(A('automation/article-template.html'), 'utf8')).replace('{{BODY}}', body);
+if (DRY) { const out = process.env.DRY_OUT || '/tmp/sample-article'; fs.mkdirSync(out, { recursive: true });
+  fs.writeFileSync(path.join(out, 'index.html'), page); fs.writeFileSync(path.join(out, 'article.json'), JSON.stringify({ topic, links: links.map(l => l.url), ...art }, null, 1));
+  console.log('DRY RUN written to', out); process.exit(0); }
 fs.mkdirSync(A(`articles/${slug}`)); fs.writeFileSync(A(`articles/${slug}/index.html`), page);
 
 // Card for lists

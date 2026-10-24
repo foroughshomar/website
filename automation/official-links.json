@@ -1,0 +1,18 @@
+{
+ "_note": "Only these official URLs may be linked from articles. status = curl result from outside Iran on 2026-10-24 (200/403 = reachable; geo = Iranian government site that refuses connections from abroad but is the official address). Remove any entry that returns 404.",
+ "links": [
+  {"id":"intamedia","url":"https://www.intamedia.ir/","fa":"پایگاه اطلاع‌رسانی سازمان امور مالیاتی کشور","en":"Iranian National Tax Administration – news & information","tags":["*"],"status":"geo"},
+  {"id":"tax","url":"https://tax.gov.ir/","fa":"سازمان امور مالیاتی کشور","en":"Iranian National Tax Administration","tags":["*"],"status":"geo"},
+  {"id":"mytax","url":"https://my.tax.gov.ir/","fa":"درگاه ملی خدمات الکترونیک مالیاتی (my.tax.gov.ir)","en":"National e-tax services portal (my.tax.gov.ir)","tags":["اظهارنامه","ثبت‌نام","پرونده","برگ تشخیص","اعتراض","اجاره","ارث","املاک","مشاغل","حقوق","ارزش افزوده","تبصره","کد اقتصادی"],"status":"geo"},
+  {"id":"modian","url":"https://tp.tax.gov.ir/","fa":"سامانه مؤدیان (کارپوشه)","en":"Taxpayers' System (Samaneh-ye Moadian) portal","tags":["مؤدیان","مودیان","صورتحساب","کارپوشه","فاکتور","پایانه","فروشگاه","اینترنتی"],"status":"geo"},
+  {"id":"tamin","url":"https://www.tamin.ir/","fa":"سازمان تأمین اجتماعی","en":"Social Security Organization (Tamin Ejtemaei)","tags":["بیمه","حقوق","دستمزد","کارگاه","کارفرما","کارکنان","پیمان"],"status":"403"},
+  {"id":"estamin","url":"https://es.tamin.ir/","fa":"سامانه خدمات غیرحضوری تأمین اجتماعی (ارسال لیست بیمه)","en":"Social Security e-services (insurance lists)","tags":["بیمه","لیست","دستمزد","کارفرما","کارگاه"],"status":"403"},
+  {"id":"audit","url":"https://www.audit.org.ir/","fa":"سازمان حسابرسی","en":"Audit Organization of Iran","tags":["حسابرسی","صورت‌های مالی","صورت مالی","استاندارد","دفاتر","شرکت","حقوقی"],"status":"geo"},
+  {"id":"iacpa","url":"https://www.iacpa.ir/","fa":"جامعه حسابداران رسمی ایران","en":"Iranian Association of Certified Public Accountants","tags":["حسابرسی","حسابدار رسمی","ماده ۲۷۲","صورت‌های مالی","شرکت"],"status":"200"},
+  {"id":"qavanin","url":"https://qavanin.ir/","fa":"سامانه ملی قوانین و مقررات (متن رسمی قوانین)","en":"National Laws and Regulations Portal (official law texts)","tags":["*"],"status":"200"},
+  {"id":"rrk","url":"https://rrk.ir/","fa":"روزنامه رسمی جمهوری اسلامی ایران","en":"Official Gazette of the Islamic Republic of Iran","tags":["قانون","بخشنامه","آیین‌نامه","ماده","تبصره","شرکت","ثبت"],"status":"geo"},
+  {"id":"mefa","url":"https://www.mefa.ir/","fa":"وزارت امور اقتصادی و دارایی","en":"Ministry of Economic Affairs and Finance","tags":["بودجه","قانون","معافیت","ارزش افزوده","سیاست"],"status":"200"},
+  {"id":"mcls","url":"https://www.mcls.gov.ir/","fa":"وزارت تعاون، کار و رفاه اجتماعی","en":"Ministry of Cooperatives, Labour and Social Welfare","tags":["حداقل دستمزد","دستمزد","قانون کار","کارکنان","حقوق"],"status":"geo"},
+  {"id":"cbi","url":"https://www.cbi.ir/","fa":"بانک مرکزی جمهوری اسلامی ایران","en":"Central Bank of the Islamic Republic of Iran","tags":["بانک","تراکنش","حساب تجاری","ارز","کارتخوان"],"status":"200"}
+ ]
+}

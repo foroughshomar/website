@@ -53,7 +53,7 @@ export async function translateArticle(src, lang, key) {
 }
 
 export function extractFa(html) {
-  html = html.replace(/<!--related-->[\s\S]*?<!--\/related-->/g, '');
+  html = html.replace(/<!--related-->[\s\S]*?<!--\/related-->/g, '').replace(/<!--srcs-->[\s\S]*?<!--\/srcs-->/g, '').replace(/<!--byline-->[\s\S]*?<!--\/byline-->/g, '');
   const title = unesc((html.match(/<span class="brand-shine-text">([^<]*)<\/span>/) || [])[1] || '');
   const description = unesc((html.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '');
   const i = html.indexOf('<div class="space-y-5">') + '<div class="space-y-5">'.length;
