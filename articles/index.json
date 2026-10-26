@@ -1,7 +1,27 @@
 {
- "updated": "2026-10-24T03:59:24.848Z",
- "count": 6,
+ "updated": "2026-10-26T06:18:00.525Z",
+ "count": 7,
  "articles": [
+  {
+   "slug": "mohlat-ezharname-arzesh-afzoode",
+   "url": "https://foroughshomar.ir/articles/mohlat-ezharname-arzesh-afzoode",
+   "title": "مهلت اظهارنامه ارزش افزوده؛ اگر دیر کنید چه می‌شود؟",
+   "category": "مهلت مالیاتی",
+   "date_fa": "۰۴-۰۸-۱۴۰۵",
+   "published_at": "2026-10-26T06:14:01.428Z",
+   "excerpt": "مهلت اظهارنامه ارزش افزوده فقط ۱۵ روز پس از هر فصل است. در این راهنما ببینید دیرکرد چه پیامدی دارد و چطور از موعدهای سال جا نمانید.",
+   "image": "/articles/mohlat-ezharname-arzesh-afzoode.jpg",
+   "translations": {
+    "en": {
+     "title": "VAT Return Deadline: What Happens If You Are Late?",
+     "excerpt": "The VAT return deadline is only 15 days after each quarter. See what late filing means and how to keep from missing the rest of the year's deadlines.",
+     "category": "Tax Deadlines",
+     "date": "26 October 2026",
+     "path": "/articles/mohlat-ezharname-arzesh-afzoode/en/",
+     "url": "https://foroughshomar.ir/articles/mohlat-ezharname-arzesh-afzoode/en/"
+    }
+   }
+  },
   {
    "slug": "soorathesab-electronic",
    "url": "https://foroughshomar.ir/articles/soorathesab-electronic",
