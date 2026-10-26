@@ -46,12 +46,29 @@ ${linkList}
 خروجی JSON با کلیدهای:
 "question" (سؤال مشخص)، "answer"، "keyword"، "title" (عنوان H1 جذاب، شامل کلیدواژه)، "seo_title"، "description"، "category" (یک یا دو کلمه)، "slug" (لاتین کوچک با خط تیره، ۳ تا ۵ کلمه فینگلیش بر پایه کلیدواژه)، "image_alt" (توضیح فارسی تصویر شامل کلیدواژه)، "intro" (پاراگراف اول)، "sections": آرایه‌ای از {"heading": عنوان H2, "paragraphs": [..], "subsections": [{"heading": عنوان H3, "paragraphs": [..]}]}، "faq": [{"q": .., "a": ..}].
 آخرین بخش heading «جمع‌بندی» داشته باشد. در پاراگراف‌ها فقط تگ <a> مجاز است.`;
-const r = await fetch('https://api.x.ai/v1/chat/completions', { method: 'POST', headers: H, body: JSON.stringify({
-  model: process.env.XAI_MODEL || 'grok-4.7', temperature: 0.6,
-  response_format: { type: 'json_object' }, messages: [{ role: 'system', content: sys }, { role: 'user', content: usr }] }) });
-if (!r.ok) { console.error('Text API error', r.status, (await r.text()).slice(0, 300)); process.exit(1); }
-const j = await r.json(); console.log('Usage:', JSON.stringify(j.usage || {}));
-const art = JSON.parse(j.choices[0].message.content.replace(/^```json|```$/g, ''));
+// Streaming avoids undici's 300s headers timeout on long generations; one retry on network errors.
+async function chatStream(payload) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      const r = await fetch('https://api.x.ai/v1/chat/completions', { method: 'POST', headers: H, body: JSON.stringify({ ...payload, stream: true }) });
+      if (!r.ok) { console.error('Text API error', r.status, (await r.text()).slice(0, 300)); process.exit(1); }
+      const dec = new TextDecoder(); let buf = '', content = '', usage = null;
+      const handle = line => { line = line.trim(); if (!line.startsWith('data:')) return; const d = line.slice(5).trim(); if (!d || d === '[DONE]') return;
+        const o = JSON.parse(d); if (o.usage) usage = o.usage; const c = o.choices?.[0]?.delta?.content; if (c) content += c; };
+      for await (const chunk of r.body) { buf += dec.decode(chunk, { stream: true }); let i; while ((i = buf.indexOf('\n')) >= 0) { handle(buf.slice(0, i)); buf = buf.slice(i + 1); } }
+      handle(buf + dec.decode());
+      return { content, usage };
+    } catch (e) {
+      if (attempt >= 2 || e instanceof SyntaxError) throw e;
+      console.log('Network error, retrying once:', e.message, e.cause?.code || '');
+      await new Promise(res => setTimeout(res, 5000));
+    }
+  }
+}
+const j = await chatStream({ model: process.env.XAI_MODEL || 'grok-4.7', temperature: 0.6, stream_options: { include_usage: true },
+  response_format: { type: 'json_object' }, messages: [{ role: 'system', content: sys }, { role: 'user', content: usr }] });
+console.log('Usage:', JSON.stringify(j.usage || {}));
+const art = JSON.parse(j.content.trim().replace(/^```json|```$/g, ''));
 let slug = (art.slug || '').toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'article';
 while (fs.existsSync(A(`articles/${slug}`))) slug += '-2';
 
