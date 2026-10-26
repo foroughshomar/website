@@ -87,7 +87,7 @@ export function buildLangPage(faHtml, slug, lang, t, dateText) {
   const disc = `<p class="mt-8 rounded-lg border border-gold/30 p-4 text-sm leading-8 text-muted">${esc(DISCLAIMER[lang])}</p>`;
   s = s.slice(0, i) + t.body_html + disc + s.slice(j);
   s = s.replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${T}">`);
-  s = s.replace(/(<a class="mt-12 inline-block text-sm text-gold[^"]*" href=")\/articles(")/, `$1/articles$2`);
+  s = s.replace(/(<a class="mt-12 inline-block text-sm text-gold[^"]*" href=")\/articles\/?(")/, `$1/articles/$2`);
   return setAlt(s, slug);
 }
 

@@ -94,9 +94,9 @@
   function attrs() { var L = ELV ? 'sjn' : lang;
     if (PEO && !document.querySelector('meta[name=robots]')) { var mr = document.createElement('meta'); mr.name = 'robots'; mr.content = 'noindex'; document.head.appendChild(mr); } if (d.lang !== L) d.lang = L; var R = lang === 'ar' ? 'rtl' : 'ltr'; if (d.dir !== R) d.dir = R; }
   // Grouped header nav (desktop dropdowns + grouped mobile menu); replaces React's flat nav visually
-  var NAV = [['خانه', '/'], ['خدمات', [['خدمات', '/services'], ['تقویم تکالیف', '/calendar'], ['نرم‌افزار سیمرغ شمار', '/software']]],
-    ['درباره ما', [['درباره ما', '/about'], ['چرا ما', '/why-us'], ['پرسش‌ها', '/faq']]], ['مقالات', '/articles'], ['تماس', '/contact']];
-  function cur(h) { var p = location.pathname.replace(/\/+$/, '') || '/'; return h === '/' ? p === '/' : (p === h || p.indexOf(h + '/') === 0); }
+  var NAV = [['خانه', '/'], ['خدمات', [['خدمات', '/services/'], ['تقویم تکالیف', '/calendar/'], ['نرم‌افزار سیمرغ شمار', '/software/']]],
+    ['درباره ما', [['درباره ما', '/about/'], ['چرا ما', '/why-us/'], ['پرسش‌ها', '/faq/']]], ['مقالات', '/articles/'], ['تماس', '/contact/']];
+  function cur(h) { h = h.replace(/\/+$/, '') || '/'; var p = location.pathname.replace(/\/+$/, '') || '/'; return h === '/' ? p === '/' : (p === h || p.indexOf(h + '/') === 0); }
   function link(t, h, cls) { var a = document.createElement('a'); a.href = h; a.textContent = t; a.className = cls; if (cur(h)) { a.classList.add('is-active'); a.setAttribute('aria-current', 'page'); } return a; }
   function closeAll(except) { document.querySelectorAll('.fs-dd[data-open]').forEach(function (x) { if (x !== except) { x.removeAttribute('data-open'); x.querySelector('button').setAttribute('aria-expanded', 'false'); } }); }
   function fit() {

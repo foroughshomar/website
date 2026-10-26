@@ -89,7 +89,7 @@ const date = new Intl.DateTimeFormat('fa-IR-u-ca-persian', { timeZone: 'Asia/Teh
   .formatToParts(new Date()).reduce((o, p) => (o[p.type] = p.value, o), {});
 const fadate = `${date.day}-${date.month}-${date.year}`;
 // paragraphs: escape everything, then re-allow internal <a href="/..."> links only
-const linkify = t => esc(t).replace(/&lt;a href=&quot;(\/[a-z0-9\/-]*)&quot;&gt;([\s\S]*?)&lt;\/a&gt;/g, '<a class="text-gold underline" href="$1">$2</a>')
+const linkify = t => esc(t).replace(/&lt;a href=&quot;(\/[a-z0-9\/-]*)&quot;&gt;([\s\S]*?)&lt;\/a&gt;/g, (m, h, t) => `<a class="text-gold underline" href="${/\/$|\.[a-z0-9]+$/i.test(h) ? h : h + '/'}">${t}</a>`)
   .replace(/&lt;a href=&quot;(https:\/\/[^&\s]+)&quot;&gt;([\s\S]*?)&lt;\/a&gt;/g, (m, u, t) => isOfficial(u) ? `<a class="text-gold underline" href="${u}" target="_blank" rel="noopener">${t}</a>` : t);
 const P = t => `<p class="text-base leading-9 text-ink">${linkify(t)}</p>`;
 const H2 = t => `<h2 class="pt-4 text-xl font-medium leading-loose text-navy">${esc(t)}</h2>`;
@@ -102,7 +102,7 @@ for (const x of main) body += sec(x);
 if ((art.faq || []).length) { body += H2('پرسش‌های متداول'); for (const f of art.faq) body += H3(f.q) + `<p class="text-base leading-9 text-ink">${esc(f.a)}</p>`; }
 for (const x of conc) body += sec(x);
 body += `<p class="mt-8 rounded-lg border border-gold/30 p-4 text-sm leading-8 text-muted">این مطلب صرفاً جنبه آموزشی و اطلاع‌رسانی دارد و جایگزین مشاوره تخصصی نیست. قوانین و بخشنامه‌ها ممکن است تغییر کنند؛ پیش از هر تصمیم، آخرین مقررات را بررسی کنید یا با مشاور مالیاتی مشورت کنید.</p>`;
-const url = `/articles/${slug}`;
+const url = `/articles/${slug}/`;
 const st = String(art.seo_title || art.title).trim(); const seoTitle = (st + ' | فروغ‌شمار سیمرغ').length <= 60 ? st + ' | فروغ‌شمار سیمرغ' : st;
 const fill = s => s.replaceAll('{{IMG}}', img).replaceAll('{{URL}}', url).replaceAll('{{TITLE}}', esc(art.title))
   .replaceAll('{{SEOTITLE}}', esc(seoTitle)).replaceAll('{{ALT}}', esc(art.image_alt || art.title)).replaceAll('{{DESC}}', esc(art.description)).replaceAll('{{DATE}}', fadate);
@@ -120,9 +120,9 @@ const dehydrate = s => s.replace(/<script data-tsr-stream-part="">[\s\S]*?<\/scr
   const m = s.match(/<a class="block" href="\/articles\/[^"]+">/); if (m) s = s.replace(m[0], card + m[0]);
   fs.writeFileSync(f, dehydrate(s)); }
 { const f = A('index.html'); let s = fs.readFileSync(f, 'utf8');
-  const m = s.match(/<a[^>]*href="\/articles\/[a-z0-9-]+"[^>]*>[\s\S]*?<\/a>/);
+  const m = s.match(/<a[^>]*href="\/articles\/[a-z0-9-]+\/?"[^>]*>[\s\S]*?<\/a>/);
   if (m) { // newest first, drop the oldest home card to keep the block size
-    const all = [...s.matchAll(/<a[^>]*href="\/articles\/[a-z0-9-]+"[^>]*>[\s\S]*?<\/a>/g)];
+    const all = [...s.matchAll(/<a[^>]*href="\/articles\/[a-z0-9-]+\/?"[^>]*>[\s\S]*?<\/a>/g)];
     const homeCard = m[0].startsWith('<a class="block"') ? card : null;
     if (homeCard) { s = s.replace(m[0], homeCard + m[0]); if (all.length > 1) { const last = all[all.length - 1][0]; const i = s.lastIndexOf(last); s = s.slice(0, i) + s.slice(i + last.length); } fs.writeFileSync(f, dehydrate(s)); }
   } }
