@@ -156,7 +156,14 @@
       var u = new URL(location.href); u.searchParams.delete('lang'); location.href = u.toString();
     };
     var lw=document.createElement('span'); lw.className='fs-langw'; lw.title=UI[lang].lang; lw.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#d4af37" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9M12 3c-2.6 2.6-3.8 5.6-3.8 9s1.2 6.4 3.8 9"/></svg>'; lw.appendChild(s);
-    c.appendChild(sw); c.appendChild(lw); h.insertBefore(c, h.firstChild);
+    // account link: «ورود» or «حساب من» (no network call; the login page sets the fs-member flag)
+    var mem = false; try { mem = localStorage.getItem('fs-member') === '1'; } catch (e) {}
+    var ac = document.createElement('a'); ac.className = 'fs-acct'; ac.href = mem ? '/account/' : '/login/';
+    var acT = mem ? (lang === 'fa' ? 'حساب من' : lang === 'ar' ? 'حسابي' : 'My account') : (lang === 'fa' ? 'ورود' : lang === 'ar' ? 'دخول' : 'Sign in');
+    ac.setAttribute('aria-label', acT); ac.title = acT;
+    ac.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#d4af37" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span></span>';
+    ac.querySelector('span').textContent = acT;
+    c.appendChild(sw); c.appendChild(lw); c.appendChild(ac); h.insertBefore(c, h.firstChild);
     fit();
   }
   // On a Persian article page with another language chosen, open that language's version

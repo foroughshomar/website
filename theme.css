@@ -81,3 +81,8 @@ html[data-lang=peo]{--font-sans:"Noto Sans Old Persian",system-ui,"Segoe UI",Rob
 html[data-lang=peo] [lang=fa]{font-family:"Noto Naskh Arabic","Vazirmatn",Tahoma,serif}
 html[data-lang=peo] .fs-peo{font-family:"Noto Sans Old Persian",system-ui,sans-serif!important;letter-spacing:.03em;word-break:break-word}
 .fs-lang option{font-family:system-ui,"Noto Sans Old Persian","Noto Naskh Arabic",sans-serif}
+
+/* account link in header (update 18) */
+.fs-acct{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 9px;border-radius:8px;border:1px solid rgba(212,175,55,.6);color:#f3ead8;text-decoration:none;white-space:nowrap}
+.fs-acct:hover{border-color:#d4af37;color:#d4af37}
+@media (max-width:640px){.fs-acct span{display:none}.fs-acct{padding:0 6px}}

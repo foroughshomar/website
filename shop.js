@@ -13,8 +13,8 @@
   function $$(s, r) { return [].slice.call((r || document).querySelectorAll(s)); }
   var DOWN = 'سامانه‌ی ثبت هنوز در حال راه‌اندازی است یا اینترنت قطع شد. چند دقیقه‌ی دیگر دوباره امتحان کنید؛ اگر باز هم نشد، به ' + MAIL + ' ایمیل بزنید.';
 
-  function post(file, data) {
-    return fetch(API + file, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), credentials: 'omit' })
+  function post(file, data, cred) {
+    return fetch(API + file, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), credentials: cred ? 'include' : 'omit' })
       .then(function (r) { return r.text().then(function (t) { var j = null; try { j = JSON.parse(t); } catch (e) {} if (!j || typeof j !== 'object') throw new Error('bad'); return j; }); });
   }
   function clearErr(form) { $$('.ferr', form).forEach(function (x) { x.remove(); }); $$('[aria-invalid]', form).forEach(function (x) { x.removeAttribute('aria-invalid'); }); var b = $('.fs-errbox', form); if (b) b.remove(); }
@@ -49,6 +49,20 @@
         '</tbody></table><p class="muted">قیمت هر پر در این بسته: ' + fa(i.price / i.f) + ' تومان (بدون مالیات). پرها تاریخ انقضا ندارند.</p>';
     }
     $$('input[name=package]', form).forEach(function (x) { x.addEventListener('change', draw); }); draw();
+    // member: order goes to the account (feathers, pre-invoice in «حساب من»); e-mail becomes optional
+    var MEM = null, bar = document.createElement('div'); bar.className = 'fs-note'; bar.id = 'fs-shop-member';
+    bar.innerHTML = '<p style="margin:0">برای اینکه پرها مستقیم به <strong>حساب کاربری</strong> شما اضافه شود و سفارش‌ها را در «حساب من» ببینید، <a href="/login/?next=/shop/">وارد شوید یا ثبت‌نام کنید</a> (عضو تازه ۳ پر هدیه می‌گیرد). بدون ورود هم می‌توانید با ایمیل سفارش بدهید.</p>';
+    form.parentNode.insertBefore(bar, form);
+    var mflag = false; try { mflag = localStorage.getItem('fs-member') === '1'; } catch (e) {}
+    if (mflag && window.fetch) fetch(API + 'account.php', { credentials: 'include' }).then(function (r) { return r.json(); }).then(function (j) {
+      if (!j || !j.ok) return;
+      if (!j.logged_in) { try { localStorage.removeItem('fs-member'); } catch (e) {} return; }
+      MEM = j.member;
+      bar.innerHTML = '<p style="margin:0">با حساب <strong>' + esc((MEM.first_name + ' ' + MEM.last_name).trim()) + '</strong> وارد شده‌اید؛ پرهای این خرید به حساب شما اضافه می‌شود. موجودی فعلی: <strong>' + fa(MEM.feathers) + ' پر</strong> · <a href="/account/">حساب من</a></p>';
+      if (!form.full_name.value) form.full_name.value = (MEM.first_name + ' ' + MEM.last_name).trim();
+      if (!form.email.value && MEM.email) form.email.value = MEM.email;
+      var h = $('#s-mail-h'); if (h) h.textContent = 'اختیاری برای اعضا: اگر بنویسید، پیش‌فاکتور به آن فرستاده می‌شود. پیش‌فاکتور در «حساب من» هم هست.';
+    }).catch(function () {});
     form.addEventListener('submit', function (e) {
       e.preventDefault(); clearErr(form);
       var c = form.querySelector('input[name=package]:checked');
@@ -57,12 +71,12 @@
       var fe = {};
       if (!d.package) fe.package = 'لطفاً یکی از بسته‌ها را انتخاب کنید.';
       if (d.full_name.length < 3) fe.full_name = 'نام و نام خانوادگی را بنویسید.';
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)) fe.email = 'ایمیل درست به نظر نمی‌رسد. نمونه‌ی درست: name@gmail.com';
+      if ((!MEM || d.email) && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)) fe.email = 'ایمیل درست به نظر نمی‌رسد. نمونه‌ی درست: name@gmail.com';
       if (!d.consent_terms) fe.consent_terms = 'برای ثبت سفارش، قوانین خرید و بازگشت وجه را بپذیرید.';
       if (!d.consent_start) fe.consent_start = 'لطفاً این بند را هم تأیید کنید.';
       if (Object.keys(fe).length) return showErr(form, { error: 'چند مورد نیاز به اصلاح دارد.', fields: fe });
       busy(form, true, 'در حال ثبت سفارش…');
-      post('shop-order.php', d).then(function (j) {
+      post('shop-order.php', d, !!MEM).then(function (j) {
         busy(form, false);
         if (!j.ok) return showErr(form, j);
         var i = j.invoice || {}, out = $('#fs-shop-done');
@@ -74,7 +88,8 @@
           '<tr><th scope="row">مالیات بر ارزش افزوده</th><td class="n">' + fa(i.vat) + ' تومان</td></tr>' +
           '<tr class="tot"><th scope="row">مبلغ قابل پرداخت</th><td class="n">' + fa(i.total) + ' تومان</td></tr></tbody></table>' +
           '<p><strong>پرداخت آنلاین به‌زودی فعال می‌شود.</strong> تا آن زمان هیچ مبلغی از شما گرفته نمی‌شود. وقتی درگاه پرداخت آماده شد، با همین شماره پیگیری و ایمیل می‌توانید سفارش را پرداخت کنید. اگر ایمیل ما تنظیم شده باشد، پیش‌فاکتور به ایمیل شما هم فرستاده می‌شود.</p>' +
-          '<p class="muted">این شماره را یادداشت کنید. برای پیگیری، پایین همین صفحه شماره و ایمیل را وارد کنید.</p></div>';
+          (j.member ? '<p>این سفارش و پیش‌فاکتورش در <a href="/account/">حساب من</a> هم دیده می‌شود و بعد از پرداخت، پرها به حساب شما اضافه می‌شود.</p></div>'
+            : '<p class="muted">این شماره را یادداشت کنید. برای پیگیری، پایین همین صفحه شماره و ایمیل را وارد کنید.</p></div>');
         form.hidden = true; var ok = $('.fs-ok', out); ok.focus(); ok.scrollIntoView({ block: 'start', behavior: 'smooth' });
         var tf = $('#fs-track-form'); if (tf) { tf.tracking.value = j.tracking; tf.email.value = d.email; }
       }).catch(function () { busy(form, false); showErr(form, { error: DOWN }); });

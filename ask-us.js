@@ -123,7 +123,10 @@
       function fail() { st.className = 'fs-ask-st err'; st.innerHTML = esc(T.na) + ' <a href="/contact/" style="text-decoration:underline">' + (fa ? 'رزرو مشاوره' : 'Book a consultation') + '</a>'; }
       function post(url, data, ms) {
         var ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function () { if (ctl) ctl.abort(); }, ms);
-        return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), signal: ctl ? ctl.signal : undefined, keepalive: ms < 20000 })
+        var mem = false; try { mem = localStorage.getItem('fs-member') === '1'; } catch (e) {}
+        // logged-in members: send the session cookie to the panel only (links the question to «حساب من»); never to the answer server
+        var cred = mem && (url === API || url === SAVE) ? 'include' : 'omit';
+        return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), signal: ctl ? ctl.signal : undefined, keepalive: ms < 20000, credentials: cred })
           .then(function (r) { return r.json().catch(function () { return { ok: false }; }).then(function (j) { j.status = r.status; return j; }); })
           .then(function (j) { clearTimeout(tm); return j; }, function (e) { clearTimeout(tm); throw e; });
       }

@@ -1,0 +1,38 @@
+/* فروغ‌شمار — ورود / ثبت‌نام و «حساب من» (روی shop.css سوار است) */
+.fs-acct-page{direction:rtl;text-align:right}
+.fs-steps{display:flex;gap:.5rem;margin:0 0 1rem;padding:0;list-style:none;font-size:.88rem;color:var(--color-muted)}
+.fs-steps li{flex:1;border-top:3px solid var(--color-line);padding-top:.35rem}
+.fs-steps li[aria-current=step]{border-color:var(--color-gold);color:var(--color-ink);font-weight:600}
+.fs-steps li.done{border-color:color-mix(in srgb,var(--color-gold) 55%,transparent)}
+.fs-acct-page input[type=tel],.fs-acct-page input[inputmode=numeric]{width:100%;min-height:2.9rem;border:1px solid var(--color-line);border-radius:.6rem;padding:.5rem .8rem;background:var(--color-navy-soft,#fff);color:var(--color-ink);font:inherit}
+.fs-otp{letter-spacing:.6em;font-size:1.5rem!important;text-align:center!important;font-variant-numeric:tabular-nums;max-width:14rem}
+.fs-linkbtn{background:none;border:0;padding:0;color:var(--color-gold);text-decoration:underline;text-underline-offset:4px;cursor:pointer;font:inherit}
+.fs-linkbtn[disabled]{color:var(--color-muted);text-decoration:none;cursor:default}
+.fs-row{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center}
+.fs-grid2{display:grid;gap:1rem;grid-template-columns:1fr}
+@media (min-width:640px){.fs-grid2{grid-template-columns:1fr 1fr}}
+.fs-bal{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem}
+.fs-bal .num{font-size:2.6rem;font-weight:700;color:var(--color-gold);line-height:1.3}
+.fs-bal .lbl{color:var(--color-muted)}
+.fs-ghost{background:transparent!important;color:var(--color-ink)!important;border:1px solid var(--color-gold)!important}
+.fs-danger{background:#b4453a!important;color:#fff!important}
+.fs-danger-zone{border-color:#b4453a!important}
+/* email switch: same look as the site's light/dark switch (.fs-sw in theme.css) */
+.fs-sw-mail{position:relative;width:46px;height:24px;border-radius:999px;border:1px solid #d4af37;background:#0b1f3a;cursor:pointer;padding:0;flex-shrink:0}
+.fs-sw-mail::after{content:"✕";position:absolute;top:2px;inset-inline-start:2px;width:18px;height:18px;border-radius:50%;background:#d4af37;color:#0b1f3a;font-size:11px;line-height:18px;text-align:center;transition:inset-inline-start .2s}
+.fs-sw-mail[aria-checked=true]{background:#f3ead8}
+.fs-sw-mail[aria-checked=true]::after{content:"✉";inset-inline-start:24px}
+.fs-sw-mail:focus-visible{outline:3px solid var(--color-gold);outline-offset:2px}
+.fs-sw-mail[disabled]{opacity:.5;cursor:wait}
+.fs-switch-row{display:flex;gap:1rem;align-items:flex-start;justify-content:space-between}
+.fs-list{list-style:none;padding:0;margin:.5rem 0}
+.fs-list>li{border-bottom:1px dashed var(--color-line);padding:.7rem 0}
+.fs-list>li:last-child{border-bottom:0}
+.fs-qa summary{cursor:pointer;font-weight:600;line-height:1.9}
+.fs-qa .a{white-space:pre-line;margin-top:.5rem;padding:.7rem .9rem;border-radius:.6rem;background:color-mix(in srgb,var(--color-gold) 9%,transparent)}
+.fs-tbl-wrap{overflow-x:auto}
+.fs-tbl{width:100%;border-collapse:collapse;font-size:.95rem}
+.fs-tbl th,.fs-tbl td{border-bottom:1px solid var(--color-line);padding:.5rem .4rem;text-align:start;vertical-align:top}
+.fs-tbl td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
+.fs-pill{display:inline-block;border-radius:999px;padding:0 .7rem;font-size:.82rem;background:color-mix(in srgb,var(--color-gold) 18%,transparent)}
+.fs-shop a.fs-btn{color:#0b1f3a;text-decoration:none}
