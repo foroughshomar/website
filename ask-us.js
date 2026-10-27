@@ -3,9 +3,11 @@
 // saved on the panel (ask-save.php). If that server can't be reached, it falls back to the panel's own answer (no sources).
 (function () {
   var API = 'https://panel.foroughshomar.ir/api/ask.php', SAVE = 'https://panel.foroughshomar.ir/api/ask-save.php',
-    RAG = 'https://45-11-186-152.sslip.io', MAX = 600;
+    RAG = ['https://45-11-186-152.sslip.io', 'https://45.11.186.152'], MAX = 600;
+  // two addresses of the same server: the name works inside Iran; the bare IP (no SNI) also passes the filtering for VPN/foreign visitors
   if (/[?&]askapi=local/.test(location.search)) { API = 'http://127.0.0.1:8099/api/ask.php'; SAVE = 'http://127.0.0.1:8099/api/ask-save.php'; }
-  if (/[?&]askrag=off/.test(location.search)) RAG = '';
+  if (/[?&]askrag=off/.test(location.search)) RAG = [];
+  if (/[?&]askrag=ip/.test(location.search)) RAG = [RAG[1]];
   var d = document.documentElement, lang = d.getAttribute('data-lang') || 'fa', fa = lang === 'fa';
   var T = fa ? {
     t: 'از ما بپرسید', p: 'سؤال مالیاتی، بیمه‌ای یا حسابداری‌تان را بنویسید تا دستیار فروغ‌شمار سیمرغ یک پاسخ عمومی و کوتاه به شما بدهد.',
@@ -85,14 +87,21 @@
           .then(function (r) { return r.json().catch(function () { return { ok: false }; }).then(function (j) { j.status = r.status; return j; }); })
           .then(function (j) { clearTimeout(tm); return j; }, function (e) { clearTimeout(tm); throw e; });
       }
-      function probe() {   // quick reachability check so visitors who can't reach our server don't wait
-        if (!RAG || !window.fetch) return Promise.reject(0);
-        var ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function () { if (ctl) ctl.abort(); }, 5000);
-        return fetch(RAG + '/health', { signal: ctl ? ctl.signal : undefined }).then(function (r) { clearTimeout(tm); if (!r.ok) throw 0; }, function (e) { clearTimeout(tm); throw e; });
+      function probe() {   // quick reachability check (both addresses at once; first to answer wins) so nobody waits
+        if (!RAG.length || !window.fetch) return Promise.reject(0);
+        return new Promise(function (ok, no) {
+          var left = RAG.length, done = false, ctls = [];
+          var tm = setTimeout(function () { ctls.forEach(function (c) { if (c) c.abort(); }); }, 5000);
+          RAG.forEach(function (base) {
+            var ctl = window.AbortController ? new AbortController() : null; ctls.push(ctl);
+            fetch(base + '/health', { signal: ctl ? ctl.signal : undefined }).then(function (r) { if (!r.ok) throw 0; if (!done) { done = true; clearTimeout(tm); ok(base); } })
+              .catch(function () { if (--left === 0 && !done) { clearTimeout(tm); no(0); } });
+          });
+        });
       }
       function viaPanel() { return post(API, body, 100000).then(show, fail); }
       probe()
-        .then(function () { return post(RAG + '/ask', body, 100000); })
+        .then(function (base) { return post(base + '/ask', body, 100000); })
         .then(function (j) {
           if (j.ok && j.answer) { show(j); if (j.save) post(SAVE, j.save, 15000).catch(function () {}); return; }
           if (j.status === 422 || j.status === 400) { show(j); return; }   // the question itself was rejected: same answer from the panel
