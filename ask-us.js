@@ -11,11 +11,17 @@
   var d = document.documentElement, lang = d.getAttribute('data-lang') || 'fa', fa = lang === 'fa';
   var T = fa ? {
     t: 'از ما بپرسید', p: 'سؤال مالیاتی، بیمه‌ای یا حسابداری‌تان را بنویسید تا دستیار فروغ‌شمار سیمرغ یک پاسخ عمومی و کوتاه به شما بدهد.',
+    lead: 'پاسخ این بخش را <strong>هوش مصنوعیِ اختصاصی و بومی‌شده‌ی فروغ‌شمار سیمرغ</strong> می‌دهد؛ دستیاری که برای مالیات، بیمه و حسابداری ایران آماده شده و پاسخ‌هایش را بر پایه‌ی قانون‌ها، آیین‌نامه‌ها و بخشنامه‌های رسمی می‌نویسد و منبع هر پاسخ را هم کنارش نشان می‌دهد.',
+    pts: ['پاسخ‌ها دقیق و مستند به منابع رسمی‌اند، اما جای <strong>مشاوره‌ی تخصصی</strong> برای پرونده‌ی شما را نمی‌گیرند. <a href="/contact/" class="fs-ask-cta">رزرو مشاوره</a>',
+      'ممکن است سؤال‌ها و پاسخ‌ها برای استفاده‌ی دیگران در سایت نمایش داده شوند؛ پیش از نمایش، <strong>نام‌ها، نام شرکت‌ها، شماره‌ها، نشانی و هر اطلاعات شخصی یا محرمانه پوشانده می‌شود.</strong>'],
     ph: 'مثلاً: مهلت ارسال اظهارنامه‌ی مالیات بر اجاره تا کی است؟', b: 'پرسیدن', w: 'در حال آماده کردن پاسخ… ممکن است تا یک دقیقه طول بکشد.',
     short: 'لطفاً سؤالتان را کامل‌تر بنویسید.', err: 'الان امکان پاسخ‌گویی نیست. لطفاً کمی بعد دوباره امتحان کنید.',
     na: 'این بخش به‌زودی فعال می‌شود. تا آن زمان می‌توانید مشاوره رزرو کنید.', link: 'سؤال دارید؟ از ما بپرسید', again: 'سؤال دیگری دارید؟ دوباره بپرسید.'
   } : {
     t: 'Ask us', p: 'Write your tax, insurance or accounting question and the Forough Shomar Simorgh assistant will give you a short, general answer.',
+    lead: 'Answers here come from <strong>Forough Shomar Simorgh\'s own AI assistant, tailored to Iran</strong>: built for Iranian tax, insurance and accounting, it writes its answers from official laws, regulations and circulars and shows the source next to each answer.',
+    pts: ['Answers are accurate and source-based, but they do not replace <strong>expert advice</strong> for your own case. <a href="/contact/" class="fs-ask-cta">Book a consultation</a>',
+      'Questions and answers may be shown on the site to help others; before that, <strong>names, company names, numbers, addresses and any personal or confidential details are hidden.</strong>'],
     ph: 'e.g. When is the rental income tax return due?', b: 'Ask', w: 'Preparing your answer… this can take up to a minute.',
     short: 'Please write your question in a bit more detail.', err: 'We cannot answer right now. Please try again a little later.',
     na: 'This service will be available soon. Meanwhile you can book a consultation.', link: 'Have a question? Ask us', again: 'Another question? Ask again.'
@@ -36,6 +42,7 @@
     if (document.getElementById('fs-ask-css')) return;
     var s = document.createElement('style'); s.id = 'fs-ask-css';
     s.textContent = '.fs-ask{max-width:48rem;margin:40px auto 0;padding:0 16px}.fs-ask-box{border:1px solid rgba(212,175,55,.45);border-radius:14px;background:var(--color-navy-soft,#12294a);padding:22px;color:inherit;box-shadow:0 8px 30px rgba(11,31,58,.12)}'
+      + '.fs-ask-intro{margin:6px 0 16px;padding:14px 16px;border-radius:10px;background:rgba(212,175,55,.10);border:1px solid rgba(212,175,55,.30);line-height:2;font-size:.95rem}.fs-ask-intro p{margin:0 0 6px}.fs-ask-intro ul{margin:0;padding-inline-start:20px;list-style:none}.fs-ask-intro li{position:relative;margin:4px 0}.fs-ask-intro li:before{content:"✦";position:absolute;inset-inline-start:-18px;color:#d4af37;font-size:.8rem}.fs-ask-intro .fs-ask-cta{display:inline-block;margin-inline-start:6px;padding:0 12px;border-radius:8px;background:#d4af37;color:#0b1f3a!important;text-decoration:none;font-weight:600;font-size:.88rem;line-height:1.9}'
       + '.fs-ask h2{margin:0 0 6px;font-size:1.4rem;color:#c9a227}.fs-ask .fs-ask-p{margin:0 0 14px;line-height:2;font-size:.95rem;opacity:.85}'
       + '.fs-ask textarea{width:100%;box-sizing:border-box;min-height:110px;border:1px solid rgba(212,175,55,.5);border-radius:10px;padding:12px;font:inherit;line-height:1.9;background:rgba(255,255,255,.96);color:#0b1f3a;resize:vertical}'
       + '.fs-ask textarea:focus{outline:2px solid #d4af37;outline-offset:1px}.fs-ask-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;flex-wrap:wrap}'
@@ -64,7 +71,7 @@
     var main = document.querySelector('main'); if (!main) return;
     css();
     var w = document.createElement('section'); w.id = 'ask'; w.className = 'fs-ask'; w.setAttribute('dir', fa || lang === 'ar' ? 'rtl' : 'ltr');
-    w.innerHTML = '<div class="fs-ask-box"><h2>' + T.t + '</h2><p class="fs-ask-p">' + T.p + '</p><form novalidate><input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip-path:inset(50%)" aria-hidden="true">'
+    w.innerHTML = '<div class="fs-ask-box"><h2>' + T.t + '</h2><div class="fs-ask-intro"><p>' + T.lead + '</p><ul>' + T.pts.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div><p class="fs-ask-p">' + T.p + '</p><form novalidate><input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip-path:inset(50%)" aria-hidden="true">'
       + '<textarea name="q" maxlength="' + MAX + '" placeholder="' + esc(T.ph) + '" aria-label="' + esc(T.t) + '"></textarea><div class="fs-ask-row"><span class="fs-ask-cnt">0 / ' + MAX + '</span><button type="submit">' + T.b + '</button></div></form>'
       + '<div class="fs-ask-st" role="status" aria-live="polite"></div><div class="fs-ask-ans" hidden></div></div>';
     place(w); W = w;
