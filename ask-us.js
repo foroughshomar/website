@@ -47,17 +47,25 @@
   function links() {
     var ls = document.querySelectorAll('[data-fs-ask-link]');
     if (ls.length) css();
-    for (var i = 0; i < ls.length; i++) { ls[i].textContent = '💬 ' + T.link; ls[i].href = '/faq/#ask'; ls[i].className = 'fs-ask-link'; }
+    for (var i = 0; i < ls.length; i++) { if (ls[i].className === 'fs-ask-link') continue; ls[i].textContent = '💬 ' + T.link; ls[i].href = '/faq/#ask'; ls[i].className = 'fs-ask-link'; }
+  }
+  var W = null;   // the question box; kept so it survives React re-rendering the page (re-inserted with its state)
+  function place(w) {
+    var main = document.querySelector('main'); if (!main) return false;
+    var hero = main.querySelector('section'); if (hero && hero.nextSibling) main.insertBefore(w, hero.nextSibling); else main.insertBefore(w, main.firstChild);
+    return true;
   }
   function box() {
-    if (!/^\/faq\/?$/.test(location.pathname) || document.getElementById('ask')) return;
+    if (!/^\/faq\/?$/.test(location.pathname)) return;
+    if (W) { if (!document.contains(W)) { var old = document.getElementById('ask'); if (old && old !== W) old.remove(); place(W); } return; }
+    if (document.getElementById('ask')) return;
     var main = document.querySelector('main'); if (!main) return;
     css();
     var w = document.createElement('section'); w.id = 'ask'; w.className = 'fs-ask'; w.setAttribute('dir', fa || lang === 'ar' ? 'rtl' : 'ltr');
     w.innerHTML = '<div class="fs-ask-box"><h2>' + T.t + '</h2><p class="fs-ask-p">' + T.p + '</p><form novalidate><input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip-path:inset(50%)" aria-hidden="true">'
       + '<textarea name="q" maxlength="' + MAX + '" placeholder="' + esc(T.ph) + '" aria-label="' + esc(T.t) + '"></textarea><div class="fs-ask-row"><span class="fs-ask-cnt">0 / ' + MAX + '</span><button type="submit">' + T.b + '</button></div></form>'
       + '<div class="fs-ask-st" role="status" aria-live="polite"></div><div class="fs-ask-ans" hidden></div></div>';
-    var hero = main.querySelector('section'); if (hero && hero.nextSibling) main.insertBefore(w, hero.nextSibling); else main.insertBefore(w, main.firstChild);
+    place(w); W = w;
     var f = w.querySelector('form'), ta = f.q, btn = f.querySelector('button'), st = w.querySelector('.fs-ask-st'), ans = w.querySelector('.fs-ask-ans'), cnt = w.querySelector('.fs-ask-cnt');
     ta.addEventListener('input', function () { cnt.textContent = ta.value.length + ' / ' + MAX; });
     f.addEventListener('submit', function (e) {
@@ -98,4 +106,9 @@
   function go() { links(); box(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
   setTimeout(go, 1500);
+  if (window.MutationObserver) {
+    var pend = false;
+    new MutationObserver(function () { if (pend) return; pend = true; setTimeout(function () { pend = false; go(); }, 50); })
+      .observe(document.documentElement, { childList: true, subtree: true });
+  }
 })();
