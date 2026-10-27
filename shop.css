@@ -1,0 +1,47 @@
+/* فروغ‌شمار — خرید پر سیمرغ، قوانین بازگشت وجه، ثبت شکایت */
+.fs-shop{direction:rtl;text-align:right;line-height:2}
+.fs-shop h2{font-size:1.35rem;font-weight:600;margin:2.2rem 0 .8rem;color:var(--color-ink)}
+.fs-shop h3{font-size:1.1rem;font-weight:600;margin:1.2rem 0 .4rem}
+.fs-shop p,.fs-shop li{color:var(--color-ink)}
+.fs-shop a{color:var(--color-gold);text-decoration:underline;text-underline-offset:4px}
+.fs-shop .muted{color:var(--color-muted);font-size:.92rem}
+.fs-note{border:1px solid var(--color-gold);background:color-mix(in srgb,var(--color-gold) 12%,transparent);border-radius:.8rem;padding:1rem 1.2rem;margin:1rem 0}
+.fs-note strong{color:var(--color-ink)}
+.fs-ok{border:1px solid var(--color-jade);background:color-mix(in srgb,var(--color-jade) 14%,transparent);border-radius:.8rem;padding:1rem 1.2rem;margin:1rem 0}
+.fs-errbox{border:1px solid #b4453a;background:color-mix(in srgb,#b4453a 10%,transparent);border-radius:.8rem;padding:.8rem 1.1rem;margin:1rem 0}
+.fs-pkgs{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin:1rem 0}
+.fs-pkg{position:relative;display:block;cursor:pointer;border:1.5px solid var(--color-line);border-radius:1rem;padding:1.2rem 1rem 1rem;background:var(--color-navy-soft,#fff);transition:border-color .2s,box-shadow .2s}
+.fs-pkg:hover{border-color:var(--color-gold)}
+.fs-pkg input{position:absolute;opacity:0;pointer-events:none}
+.fs-pkg:has(input:checked){border-color:var(--color-gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--color-gold) 35%,transparent)}
+.fs-pkg:has(input:focus-visible){outline:3px solid var(--color-gold);outline-offset:2px}
+.fs-pkg .t{display:block;font-weight:600;font-size:1.05rem}
+.fs-pkg .f{display:block;font-size:2rem;font-weight:700;color:var(--color-gold);line-height:1.6}
+.fs-pkg .p{display:block;font-weight:600}
+.fs-pkg .u{display:block;font-size:.85rem;color:var(--color-muted)}
+.fs-pkg .b{position:absolute;top:-.75rem;inset-inline-start:1rem;background:var(--color-gold);color:#0b1f3a;font-size:.78rem;border-radius:999px;padding:0 .7rem}
+.fs-form{display:grid;gap:1rem;margin-top:1rem}
+.fs-form label.fl{display:block;font-weight:600;margin-bottom:.25rem}
+.fs-form input[type=text],.fs-form input[type=email],.fs-form select,.fs-form textarea{width:100%;min-height:2.9rem;border:1px solid var(--color-line);border-radius:.6rem;padding:.5rem .8rem;background:var(--color-navy-soft,#fff);color:var(--color-ink);font:inherit}
+.fs-form textarea{min-height:8rem}
+.fs-form input:focus,.fs-form select:focus,.fs-form textarea:focus{outline:2px solid var(--color-gold);outline-offset:1px}
+.fs-form .ferr{color:#b4453a;font-size:.88rem;margin-top:.2rem}
+[data-theme=dark] .fs-form .ferr,[data-theme=dark] .fs-errbox{color:#f0a49b}
+.fs-check{display:flex;gap:.7rem;align-items:flex-start;line-height:1.9}
+.fs-check input{width:1.25rem;height:1.25rem;margin-top:.4rem;flex:none;accent-color:var(--color-gold)}
+.fs-hp{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap;opacity:0}
+.fs-btn{display:inline-flex;align-items:center;justify-content:center;min-height:2.9rem;padding:0 1.6rem;border-radius:.6rem;background:var(--color-gold);color:#0b1f3a;font-weight:600;border:0;cursor:pointer;font:inherit;font-weight:600}
+.fs-btn:hover{background:var(--color-gold-soft)}
+.fs-btn[disabled]{opacity:.55;cursor:wait}
+.fs-inv{width:100%;border-collapse:collapse;margin:.6rem 0;font-size:.97rem}
+.fs-inv th,.fs-inv td{border:1px solid var(--color-line);padding:.5rem .7rem;text-align:start}
+.fs-inv td.n{text-align:end;white-space:nowrap;font-variant-numeric:tabular-nums}
+.fs-inv tr.tot td{font-weight:700;background:color-mix(in srgb,var(--color-gold) 14%,transparent)}
+.fs-card{border:1px solid var(--color-line);border-radius:1rem;padding:1.2rem;margin:1.2rem 0;background:color-mix(in srgb,var(--color-navy-soft,#fff) 70%,transparent)}
+.fs-trk{font-size:1.5rem;font-weight:700;letter-spacing:.08em;direction:ltr;unicode-bidi:isolate;color:var(--color-gold)}
+.fs-rules{counter-reset:r;list-style:none;padding:0}
+.fs-rules>li{counter-increment:r;position:relative;padding-inline-start:2.6rem;margin:1rem 0}
+.fs-rules>li::before{content:counter(r,persian);position:absolute;inset-inline-start:0;top:.1rem;width:1.9rem;height:1.9rem;border-radius:50%;background:var(--color-gold);color:#0b1f3a;display:flex;align-items:center;justify-content:center;font-weight:700;line-height:1}
+.fs-toc{display:flex;flex-wrap:wrap;gap:.5rem 1rem;margin:.5rem 0 0}
+.fs-langnote{display:none}
+html:not([data-lang=fa]) .fs-langnote{display:block}
