@@ -196,7 +196,7 @@
       var btn = $('button[type=submit]', df); busy(btn, true, 'در حال حذف…');
       call('account.php', { action: 'delete_confirm', code: code }).then(function (j) {
         busy(btn, false); if (!j.ok) return showErr(df, j);
-        flag(false); root.innerHTML = '<div class="fs-ok" role="status"><h2 style="margin-top:0">حساب شما حذف شد</h2><p>اطلاعات شخصی شما پاک شد. سوابق مالی سفارش‌ها، بی‌نام و فقط به اندازه‌ای که قانون مالیات لازم می‌داند نگه داشته می‌شود. <a href="/privacy/#account">جزئیات در حریم خصوصی</a></p><p><a href="/">بازگشت به صفحه‌ی اصلی</a></p></div>';
+        flag(false); root.innerHTML = '<div class="fs-ok" role="status"><h2 style="margin-top:0">حساب شما حذف شد</h2><p>شماره، ایمیل و مشخصات حساب شما پاک شد. سوابق مالی سفارش‌ها با نام خریدار، فقط به مدتی که قانون مالیات لازم می‌داند نگه داشته می‌شود. <a href="/privacy/#account">جزئیات در حریم خصوصی</a></p><p><a href="/">بازگشت به صفحه‌ی اصلی</a></p></div>';
       }).catch(function () { busy(btn, false); showErr(df, { error: DOWN }); });
     });
   }
