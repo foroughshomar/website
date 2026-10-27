@@ -5,6 +5,7 @@
   var VAT = 10;
   var PKG = { p10: { f: 10, price: 209000 }, p30: { f: 30, price: 539000 }, p100: { f: 100, price: 1529000 } };
   var MAIL = 'info@foroughshomar.ir';
+  var SELLER = '<tr><th scope="row">فروشنده</th><td>نام ثبتی: فروغ‌شمار سیمرغ</td></tr><tr><th scope="row">نشانی فروشنده</th><td>تهران، شهرزیبا، میدان کودک، کوچه شاداب، بن‌بست لاله، پلاک ۱۴، واحد ۱، کد پستی: ۱۴۷۴۶۱۴۳۶۱</td></tr><tr><th scope="row">ایمیل فروشنده</th><td dir="ltr" style="text-align:right">' + MAIL + '</td></tr>';
   function fa(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '٬').replace(/\d/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'[d]; }); }
   function inv(k) { var p = PKG[k]; if (!p) return null; var v = Math.round(p.price * VAT / 100); return { title: 'بسته‌ی ' + fa(p.f) + ' پر سیمرغ', f: p.f, price: p.price, vat: v, total: p.price + v }; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -39,7 +40,7 @@
       var c = form.querySelector('input[name=package]:checked'), i = c && inv(c.value), t = $('#fs-inv');
       if (!t) return;
       if (!i) { t.innerHTML = '<p class="muted">یک بسته انتخاب کنید تا پیش‌فاکتور ساخته شود.</p>'; return; }
-      t.innerHTML = '<table class="fs-inv"><tbody>' +
+      t.innerHTML = '<table class="fs-inv"><tbody>' + SELLER +
         '<tr><th scope="row">شرح</th><td>' + esc(i.title) + ' (هر سؤال پاسخ‌داده‌شده = ۱ پر)</td></tr>' +
         '<tr><th scope="row">تعداد</th><td class="n">۱</td></tr>' +
         '<tr><th scope="row">مبلغ بسته (بدون مالیات)</th><td class="n">' + fa(i.price) + ' تومان</td></tr>' +
@@ -68,7 +69,7 @@
         out.innerHTML = '<div class="fs-ok" role="status" tabindex="-1"><h2 style="margin-top:0">سفارش شما ثبت شد</h2>' +
           '<p>شماره پیگیری: <span class="fs-trk">' + esc(j.tracking) + '</span></p>' +
           '<p>وضعیت: <strong>' + esc(j.status_fa || 'در انتظار درگاه پرداخت') + '</strong></p>' +
-          '<table class="fs-inv"><tbody><tr><th scope="row">شرح</th><td>' + esc(i.title) + '</td></tr>' +
+          '<table class="fs-inv"><tbody>' + SELLER + '<tr><th scope="row">شرح</th><td>' + esc(i.title) + '</td></tr>' +
           '<tr><th scope="row">مبلغ بسته</th><td class="n">' + fa(i.price) + ' تومان</td></tr>' +
           '<tr><th scope="row">مالیات بر ارزش افزوده</th><td class="n">' + fa(i.vat) + ' تومان</td></tr>' +
           '<tr class="tot"><th scope="row">مبلغ قابل پرداخت</th><td class="n">' + fa(i.total) + ' تومان</td></tr></tbody></table>' +

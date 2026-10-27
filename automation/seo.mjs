@@ -16,7 +16,8 @@ const DESC = { // pages whose built description is generic or duplicated
   '/': 'فروغ‌شمار سیمرغ؛ مشاوره مالیاتی و حسابداری برای اشخاص حقیقی، شرکت‌ها و صاحبان مشاغل: اظهارنامه، سامانه مؤدیان، تبصره ۱۰۰ و دفاع پرونده.',
 };
 const ORG = { '@type': ['Organization', 'AccountingService'], '@id': SITE + '/#org', name: BRAND, alternateName: BRAND_EN, url: SITE + '/',
-  email: 'info@foroughshomar.ir', logo: SITE + '/brand/logo.jpg', image: SITE + '/og.jpg', areaServed: 'IR', knowsLanguage: ['fa', 'en'] };
+  email: 'info@foroughshomar.ir', logo: SITE + '/brand/logo.jpg', image: SITE + '/og.jpg', areaServed: 'IR', knowsLanguage: ['fa', 'en'], legalName: BRAND,
+  address: { '@type': 'PostalAddress', streetAddress: 'شهرزیبا، میدان کودک، کوچه شاداب، بن‌بست لاله، پلاک ۱۴، واحد ۱', addressLocality: 'تهران', addressRegion: 'تهران', postalCode: '1474614361', addressCountry: 'IR' } };
 const AUTHOR = { '@type': 'Person', '@id': SITE + '/#hamed', name: 'دکتر حامد ملاطفی', alternateName: 'Dr. Hamed Molatefi', jobTitle: 'مشاور مالیاتی', url: SITE + '/about/', worksFor: { '@id': SITE + '/#org' } };
 const faDate = iso => new Intl.DateTimeFormat('fa-IR-u-ca-persian', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(iso));
 function byline(en, mod) { return `<!--byline--><p class="mb-6 text-sm leading-8 text-muted" data-no-i18n${en ? ' lang="en" dir="ltr"' : ''}>${en

@@ -50,8 +50,8 @@ TRACK = '''<section aria-labelledby="trk-h" class="fs-card"><h2 id="trk-h" style
 <div><button type="submit" class="fs-btn">پیگیری</button></div></form><div id="fs-track-out" aria-live="polite"></div></section>'''
 
 SELLER = f'''<h2>فروشنده و ارائه‌دهنده‌ی خدمت</h2><ul class="list-disc space-y-1 pr-6">
-<li>نام: فروغ‌شمار سیمرغ — خدمات حسابداری، مالیاتی و بیمه</li><li>نشانی اینترنتی: <a href="https://foroughshomar.ir/">foroughshomar.ir</a></li>
-<li>ایمیل: <a href="mailto:{MAIL}">{MAIL}</a></li><li>دفاتر: تهران (شهر زیبا)، اردبیل (پیرعبدالملک)، مشهد (وکیل‌آباد) — جلسه‌ی حضوری با هماهنگی قبلی؛ <a href="/contact/">صفحه‌ی تماس</a></li></ul>'''
+<li>نام ثبتی: فروغ‌شمار سیمرغ — خدمات حسابداری، مالیاتی و بیمه</li><li>نشانی دفتر تهران: تهران، شهرزیبا، میدان کودک، کوچه شاداب، بن‌بست لاله، پلاک ۱۴، واحد ۱، کد پستی: ۱۴۷۴۶۱۴۳۶۱</li><li>نشانی اینترنتی: <a href="https://foroughshomar.ir/">foroughshomar.ir</a></li>
+<li>ایمیل: <a href="mailto:{MAIL}">{MAIL}</a></li><li>دفاتر دیگر: اردبیل (پیرعبدالملک)، مشهد (وکیل‌آباد) — جلسه‌ی حضوری با هماهنگی قبلی؛ <a href="/contact/">صفحه‌ی تماس</a></li></ul>'''
 
 shop_body = f'''<div class="fs-note" role="note"><p><strong>پرداخت آنلاین به‌زودی فعال می‌شود.</strong> درگاه پرداخت پس از دریافت نماد اعتماد الکترونیکی (اینماد) راه می‌افتد. تا آن زمان می‌توانید سفارش خود را ثبت کنید و شماره پیگیری بگیرید؛ <strong>هیچ مبلغی گرفته نمی‌شود.</strong> فعلاً پرسیدن سؤال در «<a href="/faq/#ask">از ما بپرسید</a>» رایگان است.</p></div>
 <h2>«پر سیمرغ» چیست؟</h2>
@@ -60,7 +60,7 @@ shop_body = f'''<div class="fs-note" role="note"><p><strong>پرداخت آنل�
 <form id="fs-shop-form" class="fs-form" novalidate>
 <fieldset class="fs-field"><legend class="fl" style="font-size:1.35rem;font-weight:600;margin:1.2rem 0 .3rem">۱. بسته را انتخاب کنید</legend><p class="muted">قیمت‌ها بدون مالیات بر ارزش افزوده است؛ ۱۰٪ مالیات در پیش‌فاکتور اضافه می‌شود.</p><div class="fs-pkgs">{cards}</div></fieldset>
 <h2 style="margin-top:.6rem">۲. پیش‌فاکتور</h2><div id="fs-inv" aria-live="polite"><noscript><p>برای دیدن پیش‌فاکتور، جاوااسکریپت مرورگر را روشن کنید.</p></noscript></div>
-<p class="muted">فروشنده: فروغ‌شمار سیمرغ — {MAIL}. تحویل خدمت: بلافاصله پس از پرداخت، پرها به ایمیل شما افزوده می‌شود.</p>
+<p class="muted">تحویل خدمت: بلافاصله پس از پرداخت، پرها به ایمیل شما افزوده می‌شود.</p>
 <h2 style="margin-top:.6rem">۳. مشخصات خریدار</h2>
 <div class="fs-field"><label class="fl" for="s-name">نام و نام خانوادگی</label><input id="s-name" name="full_name" type="text" autocomplete="name" maxlength="80"/></div>
 <div class="fs-field"><label class="fl" for="s-mail">ایمیل</label><input id="s-mail" name="email" type="email" autocomplete="email" dir="ltr" maxlength="120" placeholder="name@gmail.com" aria-describedby="s-mail-h"/><p id="s-mail-h" class="muted">پرها به این ایمیل تعلق می‌گیرد و پیش‌فاکتور به آن فرستاده می‌شود.</p></div>
