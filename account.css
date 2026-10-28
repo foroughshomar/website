@@ -36,3 +36,4 @@
 .fs-tbl td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
 .fs-pill{display:inline-block;border-radius:999px;padding:0 .7rem;font-size:.82rem;background:color-mix(in srgb,var(--color-gold) 18%,transparent)}
 .fs-shop a.fs-btn{color:#0b1f3a;text-decoration:none}
+.fs-pw{position:relative}.fs-pw input{width:100%;padding-left:4.4rem!important}.fs-pw .fs-eye{position:absolute;left:.6rem;top:50%;transform:translateY(-50%);text-decoration:none;font-size:.85rem;min-height:36px}

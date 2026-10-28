@@ -2,6 +2,7 @@
 (function () {
   'use strict';
   var API = 'https://panel.foroughshomar.ir/api/';
+  try { if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && (/[?&]acctapi=local/.test(location.search) || sessionStorage.getItem('fs-acctapi'))) API = location.origin + '/api/'; } catch (e) {}
   var VAT = 10;
   var PKG = { p10: { f: 10, price: 209000 }, p30: { f: 30, price: 539000 }, p100: { f: 100, price: 1529000 } };
   var MAIL = 'info@foroughshomar.ir';
@@ -51,18 +52,21 @@
     $$('input[name=package]', form).forEach(function (x) { x.addEventListener('change', draw); }); draw();
     // member: order goes to the account (feathers, pre-invoice in «حساب من»); e-mail becomes optional
     var MEM = null, bar = document.createElement('div'); bar.className = 'fs-note'; bar.id = 'fs-shop-member';
-    bar.innerHTML = '<p style="margin:0">برای اینکه پرها مستقیم به <strong>حساب کاربری</strong> شما اضافه شود و سفارش‌ها را در «حساب من» ببینید، <a href="/login/?next=/shop/">وارد شوید یا ثبت‌نام کنید</a> (عضو تازه ۳ پر هدیه می‌گیرد). بدون ورود هم می‌توانید با ایمیل سفارش بدهید.</p>';
+    bar.innerHTML = '<p style="margin:0">اگر <a href="/login/?next=/shop/">وارد شوید یا عضو شوید</a>، پرها یک‌راست در حسابتان می‌نشیند و سفارش‌ها را در «حساب من» کنار هم دارید؛ عضوهای تازه هم پر سیمرغ هدیه می‌گیرند. بدون ورود هم، با ایمیل، به‌راحتی می‌توانید سفارش بدهید.</p>';
     form.parentNode.insertBefore(bar, form);
+    function loadMem() {
     var mflag = false; try { mflag = localStorage.getItem('fs-member') === '1'; } catch (e) {}
     if (mflag && window.fetch) fetch(API + 'account.php', { credentials: 'include' }).then(function (r) { return r.json(); }).then(function (j) {
       if (!j || !j.ok) return;
       if (!j.logged_in) { try { localStorage.removeItem('fs-member'); } catch (e) {} return; }
       MEM = j.member;
-      bar.innerHTML = '<p style="margin:0">با حساب <strong>' + esc((MEM.first_name + ' ' + MEM.last_name).trim()) + '</strong> وارد شده‌اید؛ پرهای این خرید به حساب شما اضافه می‌شود. موجودی فعلی: <strong>' + fa(MEM.feathers) + ' پر</strong> · <a href="/account/">حساب من</a></p>';
+      bar.innerHTML = '<p style="margin:0">' + esc(MEM.first_name) + ' عزیز، با حساب خودتان وارد شده‌اید؛ پرهای این خرید یک‌راست به حسابتان اضافه می‌شود. موجودی فعلی: <strong>' + fa(MEM.feathers) + ' پر</strong> · <a href="/account/">حساب من</a></p>';
       if (!form.full_name.value) form.full_name.value = (MEM.first_name + ' ' + MEM.last_name).trim();
       if (!form.email.value && MEM.email) form.email.value = MEM.email;
       var h = $('#s-mail-h'); if (h) h.textContent = 'اختیاری برای اعضا: اگر بنویسید، پیش‌فاکتور به آن فرستاده می‌شود. پیش‌فاکتور در «حساب من» هم هست.';
     }).catch(function () {});
+    }
+    loadMem(); document.addEventListener('fs-member-change', loadMem);
     form.addEventListener('submit', function (e) {
       e.preventDefault(); clearErr(form);
       var c = form.querySelector('input[name=package]:checked');

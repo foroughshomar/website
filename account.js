@@ -3,8 +3,8 @@
   'use strict';
   var API = 'https://panel.foroughshomar.ir/api/';
   try { if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && (/[?&]acctapi=local/.test(location.search) || sessionStorage.getItem('fs-acctapi'))) { sessionStorage.setItem('fs-acctapi', '1'); API = location.origin + '/api/'; } } catch (e) {}
-  var UNAV = 'ورود موقتاً در دسترس نیست. لطفاً کمی بعد دوباره امتحان کنید.';
-  var DOWN = 'ارتباط با سامانه برقرار نشد. اینترنت را بررسی کنید و دوباره امتحان کنید.';
+  var UNAV = 'ورود همین حالا در دسترس نیست؛ لطفاً کمی بعد دوباره سر بزنید.';
+  var DOWN = 'ارتباط با سامانه برقرار نشد. اینترنتتان را یک نگاه بیندازید و دوباره امتحان کنید.';
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return [].slice.call((r || document).querySelectorAll(s)); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -37,82 +37,6 @@
   function normPhone(v) { v = latin(v).replace(/[\s\-()]/g, ''); if (/^\+98/.test(v)) v = '0' + v.slice(3); else if (/^0098/.test(v)) v = '0' + v.slice(4); else if (/^9\d{9}$/.test(v)) v = '0' + v; return v; }
   function mmss(s) { var m = Math.floor(s / 60), x = s % 60; return fa(m) + ':' + (x < 10 ? '۰' : '') + fa(x); }
 
-  /* ---------------- ورود / ثبت‌نام ---------------- */
-  function login() {
-    var root = $('#fs-login'); if (!root) return;
-    var fPhone = $('#fs-l-id'), fCode = $('#fs-l-code'), fProf = $('#fs-l-profile'), steps = $$('.fs-steps li', root);
-    var phone = '', token = '', tExp = null, tRes = null;
-    function step(n) {
-      [fPhone, fCode, fProf].forEach(function (f, i) { f.hidden = i !== n; });
-      steps.forEach(function (li, i) { li.classList.toggle('done', i < n); if (i === n) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); });
-      var f = [fPhone, fCode, fProf][n], el = f && $('input:not([type=hidden]):not([tabindex="-1"])', f); if (el) setTimeout(function () { el.focus(); }, 30);
-    }
-    function unavailable(msg) {
-      var n = $('#fs-l-unav'); n.hidden = false; n.querySelector('p').textContent = msg || UNAV;
-      $$('button[type=submit]', root).forEach(function (b) { b.disabled = true; });
-    }
-    call('auth.php?action=status').then(function (j) {
-      if (j.ok && j.logged_in) { flag(true); location.replace(next()); return; }
-      if (!j.ok || !j.available) unavailable(j.error);
-    }).catch(function () { unavailable(UNAV); });
-
-    function timers(expires, resend) {
-      clearInterval(tExp); clearInterval(tRes);
-      var e = expires, r = resend, te = $('#fs-l-exp'), rb = $('#fs-l-resend'), rt = $('#fs-l-rt');
-      te.textContent = mmss(e); rb.disabled = true; rt.textContent = ' (' + mmss(r) + ')';
-      tExp = setInterval(function () { e--; te.textContent = mmss(Math.max(e, 0)); if (e <= 0) { clearInterval(tExp); te.textContent = 'کد منقضی شد'; } }, 1000);
-      tRes = setInterval(function () { r--; rt.textContent = r > 0 ? ' (' + mmss(r) + ')' : ''; if (r <= 0) { clearInterval(tRes); rb.disabled = false; } }, 1000);
-    }
-    function send(btn, form) {
-      clearErr(form); busy(btn, true, 'در حال فرستادن کد…');
-      return call('auth.php', { action: 'send', email: phone, website: fPhone.website.value }).then(function (j) {
-        busy(btn, false);
-        if (!j.ok) { if (j._status === 503) unavailable(j.error); if (j.fields && j.fields.email && form !== fPhone) { step(0); form = fPhone; } showErr(form, j); return false; }
-        $('#fs-l-to').textContent = phone;
-        step(1); fCode.code.value = ''; timers(j.expires_in || 600, j.resend_in || 60); return true;
-      }).catch(function () { busy(btn, false); showErr(form, { error: DOWN }); });
-    }
-    fPhone.addEventListener('submit', function (e) {
-      e.preventDefault(); clearErr(fPhone);
-      phone = fPhone.email.value.trim().toLowerCase();
-      if (!phone) return showErr(fPhone, { error: 'لطفاً ایمیلتان را بنویسید.', fields: { email: 'لطفاً ایمیلتان را بنویسید.' } });
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(phone)) return showErr(fPhone, { error: 'ایمیل درست به نظر نمی‌رسد.', fields: { email: 'ایمیل درست به نظر نمی‌رسد. نمونه‌ی درست: name@gmail.com' } });
-      send($('button[type=submit]', fPhone), fPhone);
-    });
-    $('#fs-l-edit').addEventListener('click', function () { clearInterval(tExp); clearInterval(tRes); step(0); });
-    $('#fs-l-resend').addEventListener('click', function () { send($('#fs-l-resend'), fCode); });
-    fCode.code.addEventListener('input', function () { var v = latin(fCode.code.value).replace(/\D/g, '').slice(0, 5); if (v !== fCode.code.value) fCode.code.value = v; if (v.length === 5 && !fCode.dataset.busy) fCode.requestSubmit ? fCode.requestSubmit() : fCode.dispatchEvent(new Event('submit')); });
-    fCode.addEventListener('submit', function (e) {
-      e.preventDefault(); clearErr(fCode);
-      var code = latin(fCode.code.value).replace(/\D/g, '');
-      if (code.length !== 5) return showErr(fCode, { error: 'کد ۵ رقمی را کامل بنویسید.', fields: { code: 'کد ۵ رقمی ایمیل را بنویسید.' } });
-      var btn = $('button[type=submit]', fCode); busy(btn, true, 'در حال بررسی…'); fCode.dataset.busy = '1';
-      call('auth.php', { action: 'verify', email: phone, code: code }).then(function (j) {
-        busy(btn, false); delete fCode.dataset.busy;
-        if (!j.ok) { fCode.code.select(); return showErr(fCode, j); }
-        clearInterval(tExp); clearInterval(tRes);
-        if (j.status === 'in') { flag(true); location.replace(next()); return; }
-        token = j.signup_token; step(2);
-      }).catch(function () { busy(btn, false); delete fCode.dataset.busy; showErr(fCode, { error: DOWN }); });
-    });
-    fProf.addEventListener('submit', function (e) {
-      e.preventDefault(); clearErr(fProf);
-      var d = { action: 'register', email: phone, signup_token: token, first_name: fProf.first_name.value.trim(), last_name: fProf.last_name.value.trim(),
-        accept_terms: fProf.accept_terms.checked }, fe = {};
-      if (d.first_name.length < 2) fe.first_name = 'لطفاً نام را بنویسید.';
-      if (d.last_name.length < 2) fe.last_name = 'لطفاً نام خانوادگی را بنویسید.';
-      if (!d.accept_terms) fe.accept_terms = 'برای ساخت حساب، قوانین و حریم خصوصی را بپذیرید.';
-      if (Object.keys(fe).length) return showErr(fProf, { error: 'چند مورد نیاز به اصلاح دارد.', fields: fe });
-      var btn = $('button[type=submit]', fProf); busy(btn, true, 'در حال ساخت حساب…');
-      call('auth.php', d).then(function (j) {
-        busy(btn, false);
-        if (!j.ok) { if (j._status === 410) { step(0); return showErr(fPhone, j); } return showErr(fProf, j); }
-        flag(true); location.replace(next() + (j.bonus ? (next().indexOf('?') < 0 ? '?' : '&') + 'welcome=' + j.bonus : ''));
-      }).catch(function () { busy(btn, false); showErr(fProf, { error: DOWN }); });
-    });
-    step(0);
-  }
-
   /* ---------------- حساب من ---------------- */
   function account() {
     var root = $('#fs-account'); if (!root) return;
@@ -131,15 +55,15 @@
       var lg = j.feathers_log || [];
       $('#fs-a-log').innerHTML = lg.length ? '<div class="fs-tbl-wrap"><table class="fs-tbl"><thead><tr><th>زمان</th><th>شرح</th><th>تغییر</th><th>موجودی</th></tr></thead><tbody>' + lg.map(function (l) {
         return '<tr><td class="n">' + esc(l.created) + '</td><td>' + esc(l.reason) + (l.ref ? ' <span dir="ltr">' + esc(l.ref) + '</span>' : '') + '</td><td class="n" dir="ltr" style="text-align:end">' + (l.delta > 0 ? '+' : '−') + fa(Math.abs(l.delta)) + '</td><td class="n">' + fa(l.balance) + '</td></tr>';
-      }).join('') + '</tbody></table></div>' : '<p class="muted">هنوز تغییری در موجودی ثبت نشده است.</p>';
+      }).join('') + '</tbody></table></div>' : '<p class="muted">هنوز تغییری در موجودی‌تان ثبت نشده است.</p>';
       var os = j.orders || [];
       $('#fs-a-orders').innerHTML = os.length ? '<div class="fs-tbl-wrap"><table class="fs-tbl"><thead><tr><th>شماره پیگیری</th><th>بسته</th><th>مبلغ (با مالیات)</th><th>وضعیت</th><th>تاریخ</th></tr></thead><tbody>' + os.map(function (o) {
         return '<tr><td><b dir="ltr">' + esc(o.tracking) + '</b></td><td>' + esc(o.title) + '</td><td class="n">' + fa(o.total) + ' تومان<div class="muted">مالیات: ' + fa(o.vat) + '</div></td><td><span class="fs-pill">' + esc(o.status_fa) + '</span></td><td class="n">' + esc(o.created) + '</td></tr>';
-      }).join('') + '</tbody></table></div><p class="muted">مشکلی با سفارشی دارید؟ <a href="/complaints/">ثبت شکایت یا درخواست</a> (شماره پیگیری سفارش را بنویسید).</p>' : '<p class="muted">هنوز سفارشی ثبت نکرده‌اید. <a href="/shop/">خرید پر سیمرغ</a></p>';
+      }).join('') + '</tbody></table></div><p class="muted">مشکلی با سفارشی دارید؟ <a href="/complaints/">ثبت شکایت یا درخواست</a> (شماره پیگیری سفارش را بنویسید).</p>' : '<p class="muted">هنوز سفارشی ثبت نکرده‌اید. هر وقت خواستید، <a href="/shop/">پر سیمرغ</a> در دسترس است.</p>';
       var qs = j.questions || [];
       $('#fs-a-qs').innerHTML = qs.length ? '<ul class="fs-list">' + qs.map(function (q) {
         return '<li class="fs-qa"><details><summary>' + esc(q.question) + '</summary><div class="a">' + esc(q.answer) + '</div></details><div class="muted" style="font-size:.85rem">' + esc(q.created) + '</div></li>';
-      }).join('') + '</ul>' : '<p class="muted">هنوز سؤالی نپرسیده‌اید. <a href="/faq/#ask">از سیمرغ بپرسید</a></p>';
+      }).join('') + '</ul>' : '<p class="muted">هنوز پرسشی نپرسیده‌اید؛ سیمرغ منتظر اولین پرسش شماست. <a href="/faq/#ask">از ما بپرسید</a></p>';
     }
     function load() {
       return call('account.php').then(function (j) {
@@ -163,10 +87,10 @@
     pf.addEventListener('submit', function (e) {
       e.preventDefault(); clearErr(pf); $('#fs-a-pok').hidden = true;
       var d = { action: 'profile', first_name: pf.first_name.value.trim(), last_name: pf.last_name.value.trim() }, fe = {};
-      if (d.first_name.length < 2) fe.first_name = 'لطفاً نام را بنویسید.';
-      if (d.last_name.length < 2) fe.last_name = 'لطفاً نام خانوادگی را بنویسید.';
+      if (d.first_name.length < 2) fe.first_name = 'نامتان را بنویسید.';
+      if (d.last_name.length < 2) fe.last_name = 'نام خانوادگی‌تان را هم بنویسید.';
       if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)) fe.email = 'ایمیل درست به نظر نمی‌رسد. نمونه‌ی درست: name@gmail.com';
-      if (Object.keys(fe).length) return showErr(pf, { error: 'چند مورد نیاز به اصلاح دارد.', fields: fe });
+      if (Object.keys(fe).length) return showErr(pf, { error: 'فقط چند مورد کوچک مانده؛ لطفاً نگاهی بیندازید.', fields: fe });
       var btn = $('button[type=submit]', pf); busy(btn, true, 'در حال ذخیره…');
       call('account.php', d).then(function (j) {
         busy(btn, false); if (!j.ok) { if (j._status === 401) return location.replace('/login/?next=/account/'); return showErr(pf, j); }
@@ -177,29 +101,41 @@
       var b = this; busy(b, true, 'در حال خروج…');
       call('account.php', { action: 'logout' }).then(function () { flag(false); location.replace('/'); }, function () { busy(b, false); alert(DOWN); });
     });
+    // password: set (if none yet) or change; other sessions are closed by the server
+    var pw = $('#fs-a-pw');
+    function pwMode() { var has = M && M.has_password; $$('input[name=username]', root).forEach(function (u) { u.value = M.email || ''; }); $('#fs-a-pw-cur').hidden = !has; $('#fs-a-pw-lead').textContent = has ? 'هر وقت خواستید رمزتان را عوض کنید؛ ورودهای دیگر حساب، برای امنیت بیشتر، بسته می‌شوند.' : 'هنوز رمزی برای حسابتان نساخته‌اید؛ همین حالا یکی بسازید تا ورود و حذف حساب آسان و امن باشد.'; $('button[type=submit]', pw).textContent = has ? 'تغییر رمز' : 'ساختن رمز'; }
+    pw.addEventListener('submit', function (e) {
+      e.preventDefault(); clearErr(pw); $('#fs-a-pw-ok').hidden = true;
+      var d = { action: 'password', current_password: pw.current_password.value, new_password: pw.new_password.value };
+      if (M.has_password && !d.current_password) return showErr(pw, { error: 'رمز فعلی را بنویسید.', fields: { current_password: 'رمز فعلی را بنویسید.' } });
+      if (d.new_password.length < 8) return showErr(pw, { error: 'رمز تازه دست‌کم ۸ نویسه باشد تا حسابتان امن بماند.', fields: { new_password: 'دست‌کم ۸ نویسه.' } });
+      var btn = $('button[type=submit]', pw); busy(btn, true, 'در حال ذخیره…');
+      call('account.php', d).then(function (j) {
+        busy(btn, false); if (!j.ok) return showErr(pw, j);
+        M = j.member; pw.reset(); pwMode(); $('#fs-a-pw-ok').hidden = false;
+      }).catch(function () { busy(btn, false); showErr(pw, { error: DOWN }); });
+    });
+    $$('.fs-eye', root).forEach(function (b) { b.addEventListener('click', function () { var i = document.getElementById(b.getAttribute('aria-controls')), on = i.type === 'password'; i.type = on ? 'text' : 'password'; b.textContent = on ? 'پنهان' : 'نمایش'; b.setAttribute('aria-pressed', on); }); });
+    var _render = render; render = function (j) { _render(j); pwMode(); };
+    // delete: confirmed with the current password
     var df = $('#fs-a-delete'), ds = $('#fs-a-del-send');
     ds.addEventListener('click', function () {
-      if (!confirm('برای حذف حساب، یک کد تأیید به ایمیل شما فرستاده می‌شود. ادامه می‌دهید؟')) return;
-      clearErr(df); busy(ds, true, 'در حال فرستادن کد…');
-      call('account.php', { action: 'delete_send' }).then(function (j) {
-        busy(ds, false); var ob = $('#fs-a-del-err'); if (ob) ob.remove();
-        if (!j.ok) { var eb = document.createElement('div'); eb.className = 'fs-errbox'; eb.id = 'fs-a-del-err'; eb.setAttribute('role', 'alert'); eb.textContent = j.error || DOWN; ds.parentNode.insertBefore(eb, ds.nextSibling); return; }
-        df.hidden = false; ds.hidden = true; df.code.focus();
-      }).catch(function () { busy(ds, false); alert(DOWN); });
+      var ob = $('#fs-a-del-err'); if (ob) ob.remove();
+      if (!M.has_password) { var eb = document.createElement('div'); eb.className = 'fs-errbox'; eb.id = 'fs-a-del-err'; eb.setAttribute('role', 'alert'); eb.textContent = 'برای حذف حساب، اول از بخش «رمز عبور» همین صفحه یک رمز بسازید.'; ds.parentNode.insertBefore(eb, ds.nextSibling); return; }
+      df.hidden = false; ds.hidden = true; df.password.focus();
     });
-    df.code.addEventListener('input', function () { var v = latin(df.code.value).replace(/\D/g, '').slice(0, 5); if (v !== df.code.value) df.code.value = v; });
+    $('#fs-a-del-cancel').addEventListener('click', function () { df.reset(); clearErr(df); df.hidden = true; ds.hidden = false; ds.focus(); });
     df.addEventListener('submit', function (e) {
       e.preventDefault(); clearErr(df);
-      var code = latin(df.code.value).replace(/\D/g, '');
-      if (code.length !== 5) return showErr(df, { error: 'کد ۵ رقمی ایمیل را بنویسید.', fields: { code: 'کد ۵ رقمی را کامل بنویسید.' } });
-      if (!confirm('حساب شما برای همیشه حذف می‌شود و پرهای باقی‌مانده از بین می‌رود. مطمئنید؟')) return;
+      if (!df.password.value) return showErr(df, { error: 'برای تأیید، رمز عبورتان را بنویسید.', fields: { password: 'رمز عبورتان را بنویسید.' } });
+      if (!confirm('حسابتان برای همیشه حذف می‌شود و پرهای باقی‌مانده هم از بین می‌رود. این کار برگشت ندارد. مطمئنید؟')) return;
       var btn = $('button[type=submit]', df); busy(btn, true, 'در حال حذف…');
-      call('account.php', { action: 'delete_confirm', code: code }).then(function (j) {
+      call('account.php', { action: 'delete_confirm', password: df.password.value }).then(function (j) {
         busy(btn, false); if (!j.ok) return showErr(df, j);
-        flag(false); root.innerHTML = '<div class="fs-ok" role="status"><h2 style="margin-top:0">حساب شما حذف شد</h2><p>ایمیل و مشخصات حساب شما پاک شد. سوابق مالی سفارش‌ها با نام خریدار، فقط به مدتی که قانون مالیات لازم می‌داند نگه داشته می‌شود. <a href="/privacy/#account">جزئیات در حریم خصوصی</a></p><p><a href="/">بازگشت به صفحه‌ی اصلی</a></p></div>';
+        flag(false); root.innerHTML = '<div class="fs-ok" role="status"><h2 style="margin-top:0">حسابتان حذف شد</h2><p>از همراهی‌تان صمیمانه سپاسگزاریم. ایمیل و مشخصات حسابتان پاک شد؛ فقط سوابق مالی سفارش‌ها، با نام خریدار و به مدتی که قانون مالیات لازم می‌داند، نگه داشته می‌شود. <a href="/privacy/#account">جزئیات در حریم خصوصی</a></p><p>هر وقت خواستید، درِ فروغ‌شمار به رویتان باز است. <a href="/">بازگشت به صفحه‌ی اصلی</a></p></div>';
       }).catch(function () { busy(btn, false); showErr(df, { error: DOWN }); });
     });
   }
-  function init() { login(); account(); }
+  function init() { account(); }   // /login/ is rendered by login-modal.js (FSLogin.mount)
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();

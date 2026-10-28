@@ -166,6 +166,19 @@
     c.appendChild(sw); c.appendChild(lw); c.appendChild(ac); h.insertBefore(c, h.firstChild);
     fit();
   }
+  // «ورود» links open the login/sign-up popup (login-modal.js, loaded on first use); /login/ stays the no-JS fallback
+  window.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="/login/"]');
+    if (!a || e.button || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || /^\/login\//.test(location.pathname)) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    var t = a.getAttribute('data-fs-tab') || '';
+    if (window.FSLogin) return window.FSLogin.open(t, a);
+    var sc = document.createElement('script'); sc.src = '/login-modal.js?v=1';
+    sc.onload = function () { window.FSLogin.open(t, a); }; sc.onerror = function () { location.href = a.href; };
+    document.head.appendChild(sc);
+  }, true);
+  // grand-opening welcome (promo-popup.js): only for visitors who have not seen it and are not members
+  try { if (!localStorage.getItem('fs-promo-seen-v1') && localStorage.getItem('fs-member') !== '1' && !/^\/(login|account|admin)\//.test(location.pathname)) { var ps = document.createElement('script'); ps.src = '/promo-popup.js'; ps.defer = true; document.head.appendChild(ps); } } catch (e) {}
   // On a Persian article page with another language chosen, open that language's version
   if (!pageLang && lang !== 'fa') { var t0a = alt(contentLang); if (t0a) { location.replace(t0a); return; } }
   function ready(fn) { if (document.readyState !== 'loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }

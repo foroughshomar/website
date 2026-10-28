@@ -93,10 +93,13 @@
     if (document.getElementById('ask')) return;
     var main = document.querySelector('main'); if (!main) return;
     css();
+    function memberOn() { try { return localStorage.getItem('fs-member') === '1'; } catch (e) { return false; } }
+    document.addEventListener('fs-member-change', function () { var n = document.querySelector('.fs-ask-mem'); if (n) n.remove(); });
     var w = document.createElement('section'); w.id = 'ask'; w.className = 'fs-ask'; w.setAttribute('dir', fa || lang === 'ar' ? 'rtl' : 'ltr');
     w.innerHTML = '<div class="fs-ask-box"><h2>' + T.t + '</h2><div class="fs-ask-intro"><p>' + T.lead + '</p><ul>' + T.pts.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div><p class="fs-ask-p">' + T.p + '</p><form novalidate><input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip-path:inset(50%)" aria-hidden="true">'
       + '<textarea name="q" maxlength="' + MAX + '" placeholder="' + esc(T.ph) + '" aria-label="' + esc(T.t) + '"></textarea>'
       + '<label class="fs-ask-em" hidden>' + T.em + '<input type="email" name="email" dir="ltr" inputmode="email" autocomplete="email" maxlength="190" placeholder="name@example.com"><span class="fs-ask-emh">' + T.emh + '</span></label><div class="fs-ask-row"><span class="fs-ask-cnt">0 / ' + MAX + '</span><button type="submit">' + T.b + '</button></div></form>'
+      + (fa && !memberOn() ? '<p class="fs-ask-mem" style="font-size:.85rem;opacity:.8;margin:.5rem 0 0">با <a href="/login/?next=/faq/" style="text-decoration:underline">ورود یا عضویت</a>، پرسش‌ها و پاسخ‌هایتان در «حساب من» کنار هم می‌ماند؛ عضوهای تازه پر سیمرغ هدیه می‌گیرند.</p>' : '')
       + '<div class="fs-ask-st" role="status" aria-live="polite"></div><div class="fs-ask-ans" hidden></div></div>';
     place(w); W = w;
     var f = w.querySelector('form'), ta = f.q, btn = f.querySelector('button'), st = w.querySelector('.fs-ask-st'), ans = w.querySelector('.fs-ask-ans'), cnt = w.querySelector('.fs-ask-cnt');
