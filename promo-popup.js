@@ -44,7 +44,7 @@
       + '<div class="ic" aria-hidden="true">🪶</div>'
       + '<h2 id="fsp-h">جشن افتتاحیه‌ی فروغ‌شمار سیمرغ</h2>'
       + '<p class="big" id="fsp-d">خوشحالیم که اینجایید! به مناسبت افتتاحیه، با ثبت‌نام <strong>' + fa(j.bonus) + ' پر سیمرغ</strong> هدیه بگیرید و پرسش‌های مالیاتی، بیمه‌ای و حسابداری‌تان را با خیال راحت از سیمرغ بپرسید.</p>'
-      + '<div class="cd" role="timer" aria-live="off"><div><b class="cd-d">۰</b><span>روز</span></div><div><b class="cd-h">۰</b><span>ساعت</span></div><div><b class="cd-m">۰</b><span>دقیقه</span></div></div>'
+      + '<div class="cd" role="timer" aria-live="off"><div><b class="cd-m">۰</b><span>دقیقه</span></div><div><b class="cd-h">۰</b><span>ساعت</span></div><div><b class="cd-d">۰</b><span>روز</span></div></div>'
       + '<p class="mut">تا پایان جشن' + (j.end_label ? ' (' + j.end_label + ')' : '') + '؛ برای هر ایمیل یک بار.</p>'
       + '<button type="button" class="fsp-btn">ثبت‌نام و دریافت هدیه</button>'
       + '<button type="button" class="fsp-later">بعداً، فعلاً سری به سایت می‌زنم</button></div>';
