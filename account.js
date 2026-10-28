@@ -1,4 +1,4 @@
-/* فروغ‌شمار — ورود و ثبت‌نام با موبایل و کد پیامکی، و «حساب من» */
+/* فروغ‌شمار — ورود و ثبت‌نام با ایمیل و کد تأیید ایمیلی، و «حساب من» */
 (function () {
   'use strict';
   var API = 'https://panel.foroughshomar.ir/api/';
@@ -40,7 +40,7 @@
   /* ---------------- ورود / ثبت‌نام ---------------- */
   function login() {
     var root = $('#fs-login'); if (!root) return;
-    var fPhone = $('#fs-l-phone'), fCode = $('#fs-l-code'), fProf = $('#fs-l-profile'), steps = $$('.fs-steps li', root);
+    var fPhone = $('#fs-l-id'), fCode = $('#fs-l-code'), fProf = $('#fs-l-profile'), steps = $$('.fs-steps li', root);
     var phone = '', token = '', tExp = null, tRes = null;
     function step(n) {
       [fPhone, fCode, fProf].forEach(function (f, i) { f.hidden = i !== n; });
@@ -65,17 +65,18 @@
     }
     function send(btn, form) {
       clearErr(form); busy(btn, true, 'در حال فرستادن کد…');
-      return call('auth.php', { action: 'send', phone: phone, website: fPhone.website.value }).then(function (j) {
+      return call('auth.php', { action: 'send', email: phone, website: fPhone.website.value }).then(function (j) {
         busy(btn, false);
-        if (!j.ok) { if (j._status === 503) unavailable(j.error); if (j.fields && j.fields.phone && form !== fPhone) { step(0); form = fPhone; } showErr(form, j); return false; }
-        $('#fs-l-to').textContent = phone.replace(/\d/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'[d]; });
-        step(1); fCode.code.value = ''; timers(j.expires_in || 120, j.resend_in || 60); return true;
+        if (!j.ok) { if (j._status === 503) unavailable(j.error); if (j.fields && j.fields.email && form !== fPhone) { step(0); form = fPhone; } showErr(form, j); return false; }
+        $('#fs-l-to').textContent = phone;
+        step(1); fCode.code.value = ''; timers(j.expires_in || 600, j.resend_in || 60); return true;
       }).catch(function () { busy(btn, false); showErr(form, { error: DOWN }); });
     }
     fPhone.addEventListener('submit', function (e) {
       e.preventDefault(); clearErr(fPhone);
-      phone = normPhone(fPhone.phone.value);
-      if (!/^09\d{9}$/.test(phone)) return showErr(fPhone, { error: 'شماره موبایل را درست بنویسید.', fields: { phone: 'شماره موبایل را کامل و مثل ۰۹۱۲۳۴۵۶۷۸۹ بنویسید.' } });
+      phone = fPhone.email.value.trim().toLowerCase();
+      if (!phone) return showErr(fPhone, { error: 'لطفاً ایمیلتان را بنویسید.', fields: { email: 'لطفاً ایمیلتان را بنویسید.' } });
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(phone)) return showErr(fPhone, { error: 'ایمیل درست به نظر نمی‌رسد.', fields: { email: 'ایمیل درست به نظر نمی‌رسد. نمونه‌ی درست: name@gmail.com' } });
       send($('button[type=submit]', fPhone), fPhone);
     });
     $('#fs-l-edit').addEventListener('click', function () { clearInterval(tExp); clearInterval(tRes); step(0); });
@@ -84,9 +85,9 @@
     fCode.addEventListener('submit', function (e) {
       e.preventDefault(); clearErr(fCode);
       var code = latin(fCode.code.value).replace(/\D/g, '');
-      if (code.length !== 5) return showErr(fCode, { error: 'کد ۵ رقمی را کامل بنویسید.', fields: { code: 'کد ۵ رقمی پیامک را بنویسید.' } });
+      if (code.length !== 5) return showErr(fCode, { error: 'کد ۵ رقمی را کامل بنویسید.', fields: { code: 'کد ۵ رقمی ایمیل را بنویسید.' } });
       var btn = $('button[type=submit]', fCode); busy(btn, true, 'در حال بررسی…'); fCode.dataset.busy = '1';
-      call('auth.php', { action: 'verify', phone: phone, code: code }).then(function (j) {
+      call('auth.php', { action: 'verify', email: phone, code: code }).then(function (j) {
         busy(btn, false); delete fCode.dataset.busy;
         if (!j.ok) { fCode.code.select(); return showErr(fCode, j); }
         clearInterval(tExp); clearInterval(tRes);
@@ -96,11 +97,10 @@
     });
     fProf.addEventListener('submit', function (e) {
       e.preventDefault(); clearErr(fProf);
-      var d = { action: 'register', phone: phone, signup_token: token, first_name: fProf.first_name.value.trim(), last_name: fProf.last_name.value.trim(),
-        email: fProf.email.value.trim(), accept_terms: fProf.accept_terms.checked }, fe = {};
+      var d = { action: 'register', email: phone, signup_token: token, first_name: fProf.first_name.value.trim(), last_name: fProf.last_name.value.trim(),
+        accept_terms: fProf.accept_terms.checked }, fe = {};
       if (d.first_name.length < 2) fe.first_name = 'لطفاً نام را بنویسید.';
       if (d.last_name.length < 2) fe.last_name = 'لطفاً نام خانوادگی را بنویسید.';
-      if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)) fe.email = 'ایمیل درست به نظر نمی‌رسد. نمونه‌ی درست: name@gmail.com';
       if (!d.accept_terms) fe.accept_terms = 'برای ساخت حساب، قوانین و حریم خصوصی را بپذیرید.';
       if (Object.keys(fe).length) return showErr(fProf, { error: 'چند مورد نیاز به اصلاح دارد.', fields: fe });
       var btn = $('button[type=submit]', fProf); busy(btn, true, 'در حال ساخت حساب…');
@@ -121,7 +121,7 @@
       M = j.member; CSRF = j.csrf || CSRF;
       $('#fs-a-loading').hidden = true; $('#fs-a-body').hidden = false;
       $('#fs-a-hello').textContent = (M.first_name + ' ' + M.last_name).trim() + ' عزیز، خوش آمدید';
-      $('#fs-a-phone').textContent = M.phone.replace(/\d/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'[d]; });
+      $('#fs-a-phone').textContent = M.email || '';
       $('#fs-a-since').textContent = M.since;
       $('#fs-a-bal').textContent = fa(M.feathers);
       var sw = $('#fs-a-notify'); sw.setAttribute('aria-checked', M.notify_email ? 'true' : 'false');
@@ -162,7 +162,7 @@
     var pf = $('#fs-a-profile');
     pf.addEventListener('submit', function (e) {
       e.preventDefault(); clearErr(pf); $('#fs-a-pok').hidden = true;
-      var d = { action: 'profile', first_name: pf.first_name.value.trim(), last_name: pf.last_name.value.trim(), email: pf.email.value.trim() }, fe = {};
+      var d = { action: 'profile', first_name: pf.first_name.value.trim(), last_name: pf.last_name.value.trim() }, fe = {};
       if (d.first_name.length < 2) fe.first_name = 'لطفاً نام را بنویسید.';
       if (d.last_name.length < 2) fe.last_name = 'لطفاً نام خانوادگی را بنویسید.';
       if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)) fe.email = 'ایمیل درست به نظر نمی‌رسد. نمونه‌ی درست: name@gmail.com';
@@ -179,7 +179,7 @@
     });
     var df = $('#fs-a-delete'), ds = $('#fs-a-del-send');
     ds.addEventListener('click', function () {
-      if (!confirm('برای حذف حساب، یک کد تأیید به موبایل شما فرستاده می‌شود. ادامه می‌دهید؟')) return;
+      if (!confirm('برای حذف حساب، یک کد تأیید به ایمیل شما فرستاده می‌شود. ادامه می‌دهید؟')) return;
       clearErr(df); busy(ds, true, 'در حال فرستادن کد…');
       call('account.php', { action: 'delete_send' }).then(function (j) {
         busy(ds, false); var ob = $('#fs-a-del-err'); if (ob) ob.remove();
@@ -191,12 +191,12 @@
     df.addEventListener('submit', function (e) {
       e.preventDefault(); clearErr(df);
       var code = latin(df.code.value).replace(/\D/g, '');
-      if (code.length !== 5) return showErr(df, { error: 'کد ۵ رقمی پیامک را بنویسید.', fields: { code: 'کد ۵ رقمی را کامل بنویسید.' } });
+      if (code.length !== 5) return showErr(df, { error: 'کد ۵ رقمی ایمیل را بنویسید.', fields: { code: 'کد ۵ رقمی را کامل بنویسید.' } });
       if (!confirm('حساب شما برای همیشه حذف می‌شود و پرهای باقی‌مانده از بین می‌رود. مطمئنید؟')) return;
       var btn = $('button[type=submit]', df); busy(btn, true, 'در حال حذف…');
       call('account.php', { action: 'delete_confirm', code: code }).then(function (j) {
         busy(btn, false); if (!j.ok) return showErr(df, j);
-        flag(false); root.innerHTML = '<div class="fs-ok" role="status"><h2 style="margin-top:0">حساب شما حذف شد</h2><p>شماره، ایمیل و مشخصات حساب شما پاک شد. سوابق مالی سفارش‌ها با نام خریدار، فقط به مدتی که قانون مالیات لازم می‌داند نگه داشته می‌شود. <a href="/privacy/#account">جزئیات در حریم خصوصی</a></p><p><a href="/">بازگشت به صفحه‌ی اصلی</a></p></div>';
+        flag(false); root.innerHTML = '<div class="fs-ok" role="status"><h2 style="margin-top:0">حساب شما حذف شد</h2><p>ایمیل و مشخصات حساب شما پاک شد. سوابق مالی سفارش‌ها با نام خریدار، فقط به مدتی که قانون مالیات لازم می‌داند نگه داشته می‌شود. <a href="/privacy/#account">جزئیات در حریم خصوصی</a></p><p><a href="/">بازگشت به صفحه‌ی اصلی</a></p></div>';
       }).catch(function () { busy(btn, false); showErr(df, { error: DOWN }); });
     });
   }
