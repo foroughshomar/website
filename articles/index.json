@@ -1,7 +1,27 @@
 {
- "updated": "2026-10-27T04:12:11.826Z",
- "count": 8,
+ "updated": "2026-10-28T04:20:57.552Z",
+ "count": 9,
  "articles": [
+  {
+   "slug": "gozaresh-moamelat-fasli-eslah",
+   "url": "https://foroughshomar.ir/articles/gozaresh-moamelat-fasli-eslah/",
+   "title": "گزارش معاملات فصلی را اشتباه ثبت کرده‌اید؟ قبل از هر اصلاح این را بخوانید",
+   "category": "معاملات فصلی",
+   "date_fa": "۰۶-۰۸-۱۴۰۵",
+   "published_at": "2026-10-28T04:18:18.175Z",
+   "excerpt": "گزارش معاملات فصلی را اشتباه فرستاده‌اید؟ اشتباه‌های رایج، تفاوت با ارزش افزوده و راه اصلاح را در این راهنمای عملی بخوانید.",
+   "image": "/articles/gozaresh-moamelat-fasli-eslah.jpg",
+   "translations": {
+    "en": {
+     "title": "Misfiled a quarterly transaction report? Read this first",
+     "excerpt": "Filed the quarterly transaction report in error? Common mistakes, the difference from VAT, and how to correct them, in this practical guide.",
+     "category": "Quarterly transactions",
+     "date": "28 October 2026",
+     "path": "/articles/gozaresh-moamelat-fasli-eslah/en/",
+     "url": "https://foroughshomar.ir/articles/gozaresh-moamelat-fasli-eslah/en/"
+    }
+   }
+  },
   {
    "slug": "ezharname-arzesh-afzoode-fasli",
    "url": "https://foroughshomar.ir/articles/ezharname-arzesh-afzoode-fasli/",
