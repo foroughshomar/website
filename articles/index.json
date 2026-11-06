@@ -1,7 +1,27 @@
 {
- "updated": "2026-11-05T04:35:57.387Z",
- "count": 17,
+ "updated": "2026-11-06T04:33:18.736Z",
+ "count": 18,
  "articles": [
+  {
+   "slug": "tashkil-parvande-maliat-ers",
+   "url": "https://foroughshomar.ir/articles/tashkil-parvande-maliat-ers/",
+   "title": "تشکیل پرونده مالیات بر ارث؛ از روز فوت تا تسویه",
+   "category": "مالیات ارث",
+   "date_fa": "۱۵-۰۸-۱۴۰۵",
+   "published_at": "2026-11-06T04:28:59.276Z",
+   "excerpt": "تشکیل پرونده مالیات بر ارث را از مدارک تا تسویه بخوانید. مسیر اداری، مدارک لازم و زمان مراجعه به مشاور را در این راهنما ببینید.",
+   "image": "/articles/tashkil-parvande-maliat-ers.jpg",
+   "translations": {
+    "en": {
+     "title": "Opening an Inheritance Tax File: From Death to Settlement",
+     "excerpt": "Read how to open an inheritance tax file, from documents to settlement. See the administrative path, required papers, and when to consult an adviser.",
+     "category": "Inheritance Tax",
+     "date": "6 November 2026",
+     "path": "/articles/tashkil-parvande-maliat-ers/en/",
+     "url": "https://foroughshomar.ir/articles/tashkil-parvande-maliat-ers/en/"
+    }
+   }
+  },
   {
    "slug": "maliat-naghl-enteghal-amlak",
    "url": "https://foroughshomar.ir/articles/maliat-naghl-enteghal-amlak/",
