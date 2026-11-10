@@ -210,3 +210,22 @@
     })();
   });
 })();
+
+/* Visit counter (1405-08-19): no cookies, no local storage, no third party. Sends only the page path, ?lang and the
+   referrer's domain to our own server (app.foroughshomar.ir/stats/hit); the server stores no IP and keeps only daily counts. */
+(function () {
+  try {
+    var h = location.hostname, n = navigator;
+    if ((h !== 'foroughshomar.ir' && h !== 'www.foroughshomar.ir') || n.webdriver || /bot|crawl|spider|headless/i.test(n.userAgent)) return;
+    var ref = '';
+    try { ref = document.referrer ? new URL(document.referrer).hostname : ''; } catch (e) {}
+    var body = JSON.stringify({ p: location.pathname, l: new URLSearchParams(location.search).get('lang') || '', r: ref });
+    var url = 'https://app.foroughshomar.ir/stats/hit';
+    var send = function () {
+      if (window.fetch) { fetch(url, { method: 'POST', body: body, mode: 'no-cors', credentials: 'omit', keepalive: true, headers: { 'Content-Type': 'text/plain' } }).catch(function () {}); return; }
+      if (n.sendBeacon) n.sendBeacon(url, new Blob([body], { type: 'text/plain' }));
+    };
+    if (document.visibilityState === 'prerender') document.addEventListener('visibilitychange', function once() { document.removeEventListener('visibilitychange', once); send(); });
+    else send();
+  } catch (e) {}
+})();
