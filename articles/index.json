@@ -1,7 +1,27 @@
 {
- "updated": "2026-11-16T05:11:16.220Z",
- "count": 28,
+ "updated": "2026-11-17T04:36:01.389Z",
+ "count": 29,
  "articles": [
+  {
+   "slug": "moghayerat-list-bime-dafatir",
+   "url": "https://foroughshomar.ir/articles/moghayerat-list-bime-dafatir/",
+   "title": "مغایرت لیست بیمه با دفاتر؛ اگر حقوق یکی نباشد ممیز چه می‌پرسد؟",
+   "category": "بیمه",
+   "date_fa": "۲۶-۰۸-۱۴۰۵",
+   "published_at": "2026-11-17T04:32:08.930Z",
+   "excerpt": "مغایرت لیست بیمه با دفاتر را جدی بگیرید. اینجا می‌خوانید ممیز چه مقایسه‌ای می‌کند و پیش از اظهارنامه تطبیق را از کجا شروع کنید.",
+   "image": "/articles/moghayerat-list-bime-dafatir.jpg",
+   "translations": {
+    "en": {
+     "title": "Insurance list vs books mismatch: what the assessor asks",
+     "excerpt": "Take an insurance list and books mismatch seriously. See what the assessor compares, and where to start reconciling before you file the return.",
+     "category": "Insurance",
+     "date": "17 November 2026",
+     "path": "/articles/moghayerat-list-bime-dafatir/en/",
+     "url": "https://foroughshomar.ir/articles/moghayerat-list-bime-dafatir/en/"
+    }
+   }
+  },
   {
    "slug": "kasurat-gharardad-peymankari",
    "url": "https://foroughshomar.ir/articles/kasurat-gharardad-peymankari/",
