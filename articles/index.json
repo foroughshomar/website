@@ -1,7 +1,27 @@
 {
- "updated": "2026-11-17T04:36:01.389Z",
- "count": 29,
+ "updated": "2026-11-18T04:39:36.795Z",
+ "count": 30,
  "articles": [
+  {
+   "slug": "soorat-mali-ezharname-amlkard",
+   "url": "https://foroughshomar.ir/articles/soorat-mali-ezharname-amlkard/",
+   "title": "صورت‌های مالی برای اظهارنامه عملکرد؛ سال را بدون مغایرت ببندید",
+   "category": "اظهارنامه عملکرد",
+   "date_fa": "۲۷-۰۸-۱۴۰۵",
+   "published_at": "2026-11-18T04:34:59.937Z",
+   "excerpt": "صورت‌های مالی برای اظهارنامه عملکرد را پیش از ارسال با دفاتر یکی کنید؛ گام‌های عملی، خطاهای رایج و مهلت اشخاص حقوقی را در این راهنما بخوانید.",
+   "image": "/articles/soorat-mali-ezharname-amlkard.jpg",
+   "translations": {
+    "en": {
+     "title": "Financial Statements for the Income Tax Return",
+     "excerpt": "Reconcile financial statements for the income tax return with your books before filing. Practical steps, common errors, and legal-entity deadlines.",
+     "category": "Income Tax Return",
+     "date": "18 November 2026",
+     "path": "/articles/soorat-mali-ezharname-amlkard/en/",
+     "url": "https://foroughshomar.ir/articles/soorat-mali-ezharname-amlkard/en/"
+    }
+   }
+  },
   {
    "slug": "moghayerat-list-bime-dafatir",
    "url": "https://foroughshomar.ir/articles/moghayerat-list-bime-dafatir/",
