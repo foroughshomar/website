@@ -1,7 +1,27 @@
 {
- "updated": "2026-11-19T04:40:41.447Z",
- "count": 31,
+ "updated": "2026-11-20T04:36:58.794Z",
+ "count": 32,
  "articles": [
+  {
+   "slug": "takalif-maliyati-sherkat-taze",
+   "url": "https://foroughshomar.ir/articles/takalif-maliyati-sherkat-taze/",
+   "title": "تکالیف مالیاتی شرکت تازه تأسیس؛ از ثبت تا اولین اظهارنامه",
+   "category": "تأسیس شرکت",
+   "date_fa": "۲۹-۰۸-۱۴۰۵",
+   "published_at": "2026-11-20T04:32:49.534Z",
+   "excerpt": "تکالیف مالیاتی شرکت تازه تأسیس را از روز ثبت تا اظهارنامه و صورتحساب بخوانید و مسیر سال اول را بدون ابهام و سردرگمی شروع کنید.",
+   "image": "/articles/takalif-maliyati-sherkat-taze.jpg",
+   "translations": {
+    "en": {
+     "title": "New Company Tax Duties: From Registration to First Return",
+     "excerpt": "Read the tax duties of a newly formed company from registration day to the tax return and invoices, and start year one without doubt or confusion.",
+     "category": "Company Formation",
+     "date": "20 November 2026",
+     "path": "/articles/takalif-maliyati-sherkat-taze/en/",
+     "url": "https://foroughshomar.ir/articles/takalif-maliyati-sherkat-taze/en/"
+    }
+   }
+  },
   {
    "slug": "narmafzar-hesabdari-samane-modian",
    "url": "https://foroughshomar.ir/articles/narmafzar-hesabdari-samane-modian/",
